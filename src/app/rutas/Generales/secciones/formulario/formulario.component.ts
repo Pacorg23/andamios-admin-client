@@ -11,6 +11,7 @@ import Swal from 'sweetalert2';
 import { LoadingComponent } from '../../../../effects/loading/loading.component';
 import { ImageService } from '../../../../services/image.service';
 import { ActivatedRoute } from '@angular/router';
+import _ from 'lodash';
 
 @Component({
   selector: 'app-formulario',
@@ -68,6 +69,7 @@ export class FormularioComponent {
   pdfUrl: string;
   inicio_img: File;
   inicio_imgUrl: string;
+  nombre_corto: string;
 
   banner: boolean = false;
   bannerImage: File;
@@ -81,11 +83,12 @@ export class FormularioComponent {
     this.formulario = this.fb.group({
       nombre: ['', Validators.required],
       url: [''],
-      descripcion: ['', Validators.required],
+      descripcion: [''],
       mostrar_inicio: [false], //A
       imagen_inicio: [''], //A B
       btn_pdf: [false], //A D
-      btn_contacto: [false]//A
+      btn_contacto: [false], //A
+      isTitle: [false]
     });
 
     this.formularioCategoria = this.fb.group({
@@ -117,6 +120,30 @@ export class FormularioComponent {
     }
   }
 
+  /**
+   * @description REgresa el titulo en minusculas y y espacios reemplazados por guiones(-)
+   */
+  get formattedText() {
+    const formatted = this.nombre_corto
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, '') // Quita acentos
+      .replace(/\s+/g, '-')
+    if (this.elemento.objetivo == 'categoria') {
+      this.formularioCategoria.patchValue({ url: formatted });
+    } else {
+      this.formulario.patchValue({ url: formatted });
+    }
+    return formatted;
+  }
+
+  /**
+   * @description Obtiene el elemento a editar y rellena el formulario dependiendo del objetivo
+   * @param id id del elemento a editar
+   * @param objetivo objetivo del elemento a editar
+   * @param tipo tipo del elemento a editar
+   * @returns void
+   */
   obtenerElemento(id, objetivo, tipo) { //se rellena el form
 
     this.loading = true;
@@ -150,7 +177,8 @@ export class FormularioComponent {
               descripcion: seccion.descripcion,
               mostrar_inicio: seccion.mostrar_inicio,
               btn_pdf: seccion.btn_pdf,
-              btn_contacto: seccion.btn_contacto
+              btn_contacto: seccion.btn_contacto,
+              isTitle: seccion.isTitle
             })
 
             this.pdfUrl = seccion.pdf?.nombre;
@@ -178,6 +206,7 @@ export class FormularioComponent {
               nombre: seccion.nombre,
               url: seccion.url,
               descripcion: seccion.descripcion,
+              isTitle: seccion.isTitle
             })
 
             this.inicio_imgUrl = seccion.imagen_inicio;
@@ -189,7 +218,8 @@ export class FormularioComponent {
               nombre: seccion.nombre,
               url: seccion.url,
               descripcion: seccion.descripcion,
-              btn_contacto: seccion.btn_contacto
+              btn_contacto: seccion.btn_contacto,
+              isTitle: seccion.isTitle
             })
 
             seccion.imagenes.forEach((imagen: any) => {
@@ -209,6 +239,7 @@ export class FormularioComponent {
               url: seccion.url,
               descripcion: seccion.descripcion,
               btn_pdf: seccion.btn_pdf,
+              isTitle: seccion.isTitle
             })
 
             this.pdfUrl = seccion.pdf?.nombre;
@@ -358,6 +389,16 @@ export class FormularioComponent {
     this.bannerImage = null;
   }
 
+  get invalidFields(): string[] {
+    return Object.keys(this.formularioCategoria.controls).filter(
+      (field) => this.formularioCategoria.controls[field].invalid
+    );
+  }
+
+  /**
+   * @description Envia el formulario dependiendo del objetivo y la accion
+   * @returns void
+   */
   sendForm() {
 
     this.loading = true;
@@ -372,7 +413,7 @@ export class FormularioComponent {
           formData.append('tipo', this.formularioCategoria.get('tipo').value);
           formData.append('area', this.division);
           formData.append('mostrar_inicio', this.formularioCategoria.get('mostrar_inicio').value);
-          if(this.bannerImage){
+          if (this.bannerImage) {
             formData.append('banner', this.bannerImage, this.bannerImage?.name);
           }
 
@@ -465,6 +506,7 @@ export class FormularioComponent {
           })
         }
       } else {
+        console.log(this.invalidFields)
         Swal.fire({
           title: 'Error',
           text: 'Por favor llena todos los campos',
@@ -487,6 +529,20 @@ export class FormularioComponent {
         } else if (this.elemento.accion == 'agregar') {
           formData.append('categoria', this.elemento.id); //id de la categoria a la que pertenece
           formData.append('tipo', this.elemento.tipo); //tipo de seccion
+        }
+        formData.append('isTitle', this.formulario.get('isTitle').value);
+
+        if(_.isNil(this.formulario.get('imagen_inicio').value) || _.isEmpty(this.formulario.get('imagen_inicio').value)){
+          Swal.fire({
+            title: 'Error',
+            text: 'Se necesita tener una imagen de inicio',
+            icon: 'error',
+            confirmButtonText: 'Aceptar',
+            confirmButtonColor: '#cf142b'
+          }).then(() => {
+            this.loading = false;
+          })
+          return;
         }
 
         switch (this.elemento.tipo) {
