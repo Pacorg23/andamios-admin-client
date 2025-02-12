@@ -11,12 +11,12 @@
   <form [formGroup]="formularioCategoria" (ngSubmit)="sendForm()">
 
     <div class="form-floating mb-3">
-      <input type="text" class="form-control" placeholder="titulo" formControlName="nombre">
+      <input type="text" class="form-control" placeholder="titulo" formControlName="nombre" [(ngModel)]="nombre_corto">
       <label for="floatingInput">Titulo</label>
     </div>
 
     <div class="form-floating mb-3">
-      <input type="text" class="form-control" placeholder="Nombre" formControlName="url">
+      <input type="text" class="form-control" placeholder="Nombre" formControlName="url" [value]="formattedText">
       <label for="floatingInput">Nombre Corto( ejem. andamios-atlas)</label>
     </div>
 
@@ -46,16 +46,16 @@
     </div>
 
     @if(banner){
-      <div class="mb-3">
-        <label for="" class="form-label">Banner de la pagina de inicio</label>
-        <input type="file" class="form-control" formControlName="banner" (change)="onBannerChange($event)">
+    <div class="mb-3">
+      <label for="" class="form-label">Banner de la pagina de inicio</label>
+      <input type="file" class="form-control" formControlName="banner" (change)="onBannerChange($event)">
 
-        @if(bannerImageURL){
-          <div class="mb-3">
-            <img id="image_inicio" src="{{bannerImageURL}}" alt="image" >
-          </div>
-        }
+      @if(bannerImageURL){
+      <div class="mb-3">
+        <img id="image_inicio" src="{{bannerImageURL}}" alt="image">
       </div>
+      }
+    </div>
     }
 
     <button type="submit">Enviar</button>
@@ -69,15 +69,22 @@
 
   <form [formGroup]="formulario" (ngSubmit)="sendForm()">
     <div class="form-floating mb-3">
-      <input type="text" class="form-control" placeholder="titulo" formControlName="nombre">
+      <input type="text" class="form-control" placeholder="titulo" formControlName="nombre" [(ngModel)]="nombre_corto">
       <label for="floatingInput">Titulo</label>
     </div>
 
     @if(elemento?.tipo === 'A'){
     <div class="form-floating mb-3">
-      <input type="text" class="form-control" placeholder="Nombre" formControlName="url">
+      <input type="text" class="form-control" placeholder="Nombre" formControlName="url" [value]="formattedText">
       <label for="floatingInput">Nombre Corto( ejem. andamios-atlas)</label>
     </div>
+
+    @if(elemento?.objetivo == 'seccion'){
+    <div class="mb-3">
+      <label for="" class="form-label pe-2">¿Es seccion de titulo?</label>
+      <input class="form-check-input" type="checkbox" formControlName="isTitle">
+    </div>
+    }
     }
 
     <div class="mb-3">
@@ -171,5 +178,5 @@
 </div>
 
 @if(loading){
-  <app-loading></app-loading>
+<app-loading></app-loading>
 }

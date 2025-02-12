@@ -10,4 +10,5 @@ export class SeccionSingle{
   categoria:number
   pdf: any;
   imagenes: string[];
+  isTitle: boolean;
 }
