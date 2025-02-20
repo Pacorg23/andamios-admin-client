@@ -100,7 +100,6 @@ export class ProveedoresComponent {
           this.loading = false
         })
       },err=>{
-        console.log(err)
         Swal.fire({
           title: 'No se han realizado cambios',
           text: JSON.stringify(err),

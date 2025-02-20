@@ -81,7 +81,6 @@ export class ContactoComponent {
       data.fecha = dates.fechaB;
 
       this.solicitud = data
-      console.log(this.solicitud)
       this.show = true
       this.loading = false
     })

@@ -32,5 +32,6 @@ export class JwtService {
 
   deleteToken(){
     this.cookie.delete("token")
+    console.log("Token eliminado")
   }
 }

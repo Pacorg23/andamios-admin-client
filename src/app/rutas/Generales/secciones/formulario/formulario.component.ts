@@ -115,7 +115,6 @@ export class FormularioComponent {
 
   controladorEditar() {
     if (this.elemento.accion === 'editar') {
-      //console.log('editar' + this.elemento.id + ' ' + this.elemento.objetivo)
       this.obtenerElemento(this.elemento.id, this.elemento.objetivo, this.elemento.tipo);
     }
   }
@@ -151,7 +150,6 @@ export class FormularioComponent {
     if (objetivo == 'categoria') {
       //obtener categoria
       this.apiService.obtenerCategoria(id).subscribe((categoria) => {
-        //console.log(categoria)
         this.formularioCategoria.patchValue({
           nombre: categoria.nombre,
           tipo: categoria.tipo,
@@ -167,7 +165,6 @@ export class FormularioComponent {
     } else if (objetivo == 'seccion') {
       //obtener seccion
       this.apiService.obtenerSeccion(id).subscribe((seccion) => {
-        console.log(seccion)
 
         switch (tipo) {
           case 'A':
@@ -197,7 +194,6 @@ export class FormularioComponent {
                 url: imagen.file
               });
             })
-            //console.log(this.fileUrl)
 
             break;
           case 'B':
@@ -230,7 +226,6 @@ export class FormularioComponent {
                 url: imagen.file
               });
             })
-            //console.log(this.fileUrl)
 
             break;
           case 'D':
@@ -260,7 +255,6 @@ export class FormularioComponent {
     } else if (objetivo == 'subseccion') {
       //obtener subseccion
       this.apiService.obtenerSubseccion(id).subscribe((subseccion) => {
-        //console.log(subseccion)
 
         this.formulario.patchValue({
           nombre: subseccion.nombre,
@@ -295,7 +289,6 @@ export class FormularioComponent {
     // Verifica si el input 'elemento' ha cambiado
     if (changes['elemento']) {
       // Ejecuta la acción que deseas realizar
-      //console.log(this.elemento)
       this.resetOnChange();
       this.controladorEditar();
     }
@@ -429,7 +422,6 @@ export class FormularioComponent {
               window.location.reload();
             })
           }, error => {
-            console.log(error)
             Swal.fire({
               title: 'Ocurrio un error al agregar la categoria',
               text: error,
@@ -478,7 +470,6 @@ export class FormularioComponent {
                   window.location.reload();
                 })
               }, error => {
-                console.log(error)
                 Swal.fire({
                   title: 'Ocurrio un error al modificar la categoria',
                   text: error,
@@ -506,7 +497,6 @@ export class FormularioComponent {
           })
         }
       } else {
-        console.log(this.invalidFields)
         Swal.fire({
           title: 'Error',
           text: 'Por favor llena todos los campos',
@@ -532,7 +522,7 @@ export class FormularioComponent {
         }
         formData.append('isTitle', this.formulario.get('isTitle').value);
 
-        if(_.isNil(this.formulario.get('imagen_inicio').value) || _.isEmpty(this.formulario.get('imagen_inicio').value)){
+        if ((_.isNil(this.formulario.get('imagen_inicio').value) || _.isEmpty(this.formulario.get('imagen_inicio').value)) && _.isEmpty(this.inicio_imgUrl)) {
           Swal.fire({
             title: 'Error',
             text: 'Se necesita tener una imagen de inicio',
@@ -770,7 +760,6 @@ export class FormularioComponent {
     const archivo = new FormData();
 
     this.apiService.agregarSeccion(formData).subscribe(data => {
-      //console.log(data);
 
       imagenes.append('id_seccion', data['id_seccion']);
       this.files.forEach(file => {
@@ -778,9 +767,7 @@ export class FormularioComponent {
       });
 
       this.apiService.agregarImagenesASeccion(imagenes).subscribe(data => {
-        //console.log(data);
       }, error => {
-        console.log(error);
         controlador = {
           error: true,
           mensaje: controlador.mensaje + ', ' + error
@@ -792,9 +779,7 @@ export class FormularioComponent {
         archivo.append(this.pdf?.name, this.pdf, this.pdf?.name);
 
         this.apiService.agregarArchivoASeccion(archivo).subscribe(data => {
-          //console.log(data);
         }, error => {
-          console.log(error);
           controlador = {
             error: true,
             mensaje: controlador.mensaje + ', ' + error
@@ -897,7 +882,6 @@ export class FormularioComponent {
       this.apiService.modificarArchivoSeccion(archivo).subscribe(data => {
         this.pdfAlreadyExists = false;
       }, error => {
-        console.log(error)
         Swal.fire({
           title: 'Ocurrio un error al modificar el archivo',
           text: error,
@@ -914,23 +898,23 @@ export class FormularioComponent {
   agregarArchivoSeccion(id_seccion) {
     const archivo = new FormData();
     archivo.append('id_seccion', id_seccion);
-    archivo.append(this.pdf?.name, this.pdf, this.pdf?.name);
+    if (!_.isNil(this.pdf)) {
+      archivo.append(this.pdf?.name, this.pdf, this.pdf?.name);
 
-    this.apiService.agregarArchivoASeccion(archivo).subscribe(data => {
-      //console.log(data);
-      this.pdfAlreadyExists = false;
-    }, error => {
-      console.log(error);
-      Swal.fire({
-        title: 'Ocurrio un error al agregar el archivo',
-        text: error,
-        icon: 'error',
-        confirmButtonText: 'Aceptar',
-        confirmButtonColor: '#cf142b'
-      }).then(() => {
-        this.loading = false;
+      this.apiService.agregarArchivoASeccion(archivo).subscribe(data => {
+        this.pdfAlreadyExists = false;
+      }, error => {
+        Swal.fire({
+          title: 'Ocurrio un error al agregar el archivo',
+          text: error,
+          icon: 'error',
+          confirmButtonText: 'Aceptar',
+          confirmButtonColor: '#cf142b'
+        }).then(() => {
+          this.loading = false;
+        })
       })
-    })
+    }
   }
 
   //IMAGENES
@@ -957,8 +941,6 @@ export class FormularioComponent {
               origen: file.origen,
               url: URL.createObjectURL(fileChange)
             }
-
-            console.log(this.fileUrl)
           }, error => {
             console.log(error)
           })
@@ -1008,7 +990,6 @@ export class FormularioComponent {
               url: URL.createObjectURL(fileChange)
             }
 
-            console.log(this.fileUrl)
           }, error => {
             console.log(error)
           })
@@ -1043,7 +1024,6 @@ export class FormularioComponent {
       if (file.id !== null) {
         this.apiService.eliminarImagenSeccion(file.id).subscribe(data => {
           this.fileUrl.splice(index, 1);
-          console.log(this.files)
         }, error => {
           Swal.fire({
             title: 'Ocurrio un error al eliminar la imagen',
@@ -1056,16 +1036,13 @@ export class FormularioComponent {
           })
         })
       } else {
-        //console.log(file.id_array - 1)
         this.files[file.id_array - 1] = null;
         this.fileUrl.splice(index, 1);
-        //console.log(this.files)
       }
     } else if (this.elemento.objetivo === 'subseccion') {
       if (file.id !== null) {
         this.apiService.eliminarImagenSubseccion(file.id).subscribe(data => {
           this.fileUrl.splice(index, 1);
-          //console.log(this.files)
         }, error => {
           Swal.fire({
             title: 'Ocurrio un error al eliminar la imagen',
@@ -1078,10 +1055,8 @@ export class FormularioComponent {
           })
         })
       } else {
-        //console.log(file.id_array - 1)
         this.files[file.id_array - 1] = null;
         this.fileUrl.splice(index, 1);
-        //console.log(this.files)
       }
     }
   }
@@ -1141,7 +1116,6 @@ export class FormularioComponent {
     formData.append('seccion', id_seccion);
 
     this.apiService.agregarSubseccion(formData).subscribe(data => {
-      //console.log(data);
 
       imagenes.append('id_subseccion', data['id_subseccion']);
       this.files.forEach(file => {
@@ -1149,9 +1123,7 @@ export class FormularioComponent {
       });
 
       this.apiService.agregarImagenesASubseccion(imagenes).subscribe(data => {
-        //console.log(data);
       }, error => {
-        console.log(error);
         controlador = {
           error: true,
           mensaje: controlador.mensaje + ', ' + error
@@ -1163,9 +1135,7 @@ export class FormularioComponent {
         archivo.append(this.pdf?.name, this.pdf, this.pdf?.name);
 
         this.apiService.agregarArchivoASubseccion(archivo).subscribe(data => {
-          //console.log(data);
         }, error => {
-          console.log(error);
           controlador = {
             error: true,
             mensaje: controlador.mensaje + ', ' + error
@@ -1286,10 +1256,8 @@ export class FormularioComponent {
       archivo.append(this.pdf?.name, this.pdf, this.pdf?.name);
 
       this.apiService.modificarArchivoSubseccion(archivo).subscribe(data => {
-        //console.log(data);
         this.pdfAlreadyExists = false;
       }, error => {
-        console.log(error);
         Swal.fire({
           title: 'Ocurrio un error al modificar el archivo',
           text: error,
@@ -1309,10 +1277,8 @@ export class FormularioComponent {
     archivo.append(this.pdf?.name, this.pdf, this.pdf?.name);
 
     this.apiService.agregarArchivoASubseccion(archivo).subscribe(data => {
-      //console.log(data);
       this.pdfAlreadyExists = false;
     }, error => {
-      console.log(error);
       Swal.fire({
         title: 'Ocurrio un error al agregar el archivo',
         text: error,

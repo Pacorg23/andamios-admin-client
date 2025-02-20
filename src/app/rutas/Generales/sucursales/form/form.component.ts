@@ -47,8 +47,6 @@ export class FormComponent {
   }
 
   subir(){
-    //console.log(this.form.value)
-
     if(this.sucursal.id){
       let sucursalNueva = {
         id: this.sucursal.id,
@@ -64,7 +62,6 @@ export class FormComponent {
           this.close()
         })
       },error=>{
-        console.log(error)
         Swal.fire({
           icon: 'error',
           title: 'Error al modificar',
@@ -88,7 +85,6 @@ export class FormComponent {
           this.close()
         })
       },error=>{
-        console.log(error)
         Swal.fire({
           icon: 'error',
           title: 'Error al agregar',
