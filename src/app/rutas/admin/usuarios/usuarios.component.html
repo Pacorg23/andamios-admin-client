@@ -10,6 +10,7 @@
           <th>Correo</th>
           <th>Modificar</th>
           <th>Eliminar</th>
+          <th>Cerrar sesión</th>
         </tr>
       </thead>
       <tbody class="table-group-divider">
@@ -21,6 +22,7 @@
             <th>{{user.email}}</th>
             <th (click)="editar(user)"> <mat-icon>edit</mat-icon> </th>
             <th (click)="eliminar(user.id)"> <mat-icon>delete</mat-icon> </th>
+            <th (click)="cerrar(user.id)"> <mat-icon>logout</mat-icon> </th>
           </tr>
         }
 

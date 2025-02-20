@@ -251,7 +251,6 @@ export class UsuariosComponent {
 
                   })
                 }, err => {
-                  console.log(err)
                   Swal.fire({
                     title: "Error",
                     confirmButtonColor: "#B30000",
@@ -288,6 +287,10 @@ export class UsuariosComponent {
           this.loading = false
         })
       }
+    }
+
+    cerrar(id) {
+
     }
 
 

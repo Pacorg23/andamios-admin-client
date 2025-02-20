@@ -42,7 +42,6 @@ export class HomeAndamiosComponent {
     );
 
     if (utilidadesFiltradas.length === 0) {
-      //console.log("No se encontraron herramientas que coincidan con el filtro.");
       this.utilities = true
     }
 

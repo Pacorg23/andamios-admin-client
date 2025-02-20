@@ -1,6 +1,6 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { catchError, Observable, throwError } from 'rxjs';
 import { CategoriaSingle } from '../models/general/categoriaSingle';
 import { Categoria } from '../models/general/navbar';
 import { SeccionSingle } from '../models/general/seccionSingle';
@@ -10,6 +10,10 @@ import { Solicitud } from '../models/general/solicitud';
 import { Sucursal } from '../models/general/sucursal';
 import { Comunicado } from '../models/comunicado';
 import { Archivo } from '../models/archivo';
+import Swal from 'sweetalert2';
+import { JwtService } from './jwt.service';
+
+export const SESSION_ERROR = "session";
 
 @Injectable({
   providedIn: 'root'
@@ -202,6 +206,5 @@ export class ApiService {
 
   obtenerArchivo(origen:string):Observable<Archivo>{
     return this.http.get<Archivo>(`${this.URL}/obtenerArchivo/${origen}`)
-
   }
 }

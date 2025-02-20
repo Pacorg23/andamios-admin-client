@@ -41,9 +41,6 @@ export class SolicitudesComponent {
   }
 
   ordenarPorFecha(): void {
-
-    console.log(this.controlSort)
-
     if(this.controlSort){ //falso se ordena del mas reciente
       this.solicitudes.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
       this.icon = "south"
@@ -53,8 +50,6 @@ export class SolicitudesComponent {
       this.icon ="north"
       this.controlSort = true
     }
-
-
   }
 
   ordenarPorNombre(): void {
