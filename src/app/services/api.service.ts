@@ -1,6 +1,6 @@
-import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { catchError, Observable, throwError } from 'rxjs';
+import { Observable } from 'rxjs';
 import { CategoriaSingle } from '../models/general/categoriaSingle';
 import { Categoria } from '../models/general/navbar';
 import { SeccionSingle } from '../models/general/seccionSingle';
@@ -10,17 +10,18 @@ import { Solicitud } from '../models/general/solicitud';
 import { Sucursal } from '../models/general/sucursal';
 import { Comunicado } from '../models/comunicado';
 import { Archivo } from '../models/archivo';
-import Swal from 'sweetalert2';
-import { JwtService } from './jwt.service';
+
+import { ENV_CONSTANTS } from '../services/environment.service';
 
 export const SESSION_ERROR = "session";
+const SERVICE_NAME = 'general';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ApiService {
 
-  private URL = "http://localhost:3000/general"
+  private URL: string;
 
   private httpOptions = {
     headers: new HttpHeaders({
@@ -28,7 +29,9 @@ export class ApiService {
     })
   }
 
-  constructor(private http:HttpClient) { }
+  constructor(private http:HttpClient) {
+    this.URL = `${ENV_CONSTANTS.API_URL}:${ENV_CONSTANTS.PORT}/${SERVICE_NAME}/`;
+   }
 
   obtenerNavbar(area:string):Observable<Categoria[]>{
     return this.http.get<Categoria[]>(`${this.URL}/navbar/${area}`);

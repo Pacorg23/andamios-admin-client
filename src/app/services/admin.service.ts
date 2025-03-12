@@ -2,17 +2,17 @@ import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http
 import { Injectable } from '@angular/core';
 import { catchError, Observable, throwError } from 'rxjs';
 import { Usuario } from '../models/admin/usuario';
-import Swal from 'sweetalert2';
-import { SESSION_ERROR } from './api.service';
-import { JwtService } from './jwt.service';
-import { Router } from '@angular/router';
+
+import { ENV_CONSTANTS } from '../services/environment.service';
+
+const SERVICE_NAME = 'admin';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AdminService {
 
-  private URL = "http://localhost:3000/admin/"
+  private URL: string;
 
   private httpOptions = {
     headers: new HttpHeaders({
@@ -20,7 +20,9 @@ export class AdminService {
     })
   }
 
-  constructor(private http: HttpClient, private tokenService: JwtService, private router: Router) { }
+  constructor(private http: HttpClient ) {
+    this.URL = `${ENV_CONSTANTS.API_URL}:${ENV_CONSTANTS.PORT}/${SERVICE_NAME}/`;
+  }
 
   login(usuario) {
     return this.http.post(`${this.URL}login`, usuario, this.httpOptions)
