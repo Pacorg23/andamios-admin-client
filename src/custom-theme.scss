@@ -12,19 +12,19 @@
 // Define the palettes for your theme using the Material Design palettes available in palette.scss
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue. Available color palettes: https://material.io/design/color/
-$AdminPanel-primary: mat.define-palette(mat.$indigo-palette);
-$AdminPanel-accent: mat.define-palette(mat.$pink-palette, A200, A100, A400);
+$app-andamios-admin-primary: mat.define-palette(mat.$indigo-palette);
+$app-andamios-admin-accent: mat.define-palette(mat.$pink-palette, A200, A100, A400);
 
 // The warn palette is optional (defaults to red).
-$AdminPanel-warn: mat.define-palette(mat.$red-palette);
+$app-andamios-admin-warn: mat.define-palette(mat.$red-palette);
 
 // Create the theme object. A theme consists of configurations for individual
 // theming systems such as "color" or "typography".
-$AdminPanel-theme: mat.define-light-theme((
+$app-andamios-admin-theme: mat.define-light-theme((
   color: (
-    primary: $AdminPanel-primary,
-    accent: $AdminPanel-accent,
-    warn: $AdminPanel-warn,
+    primary: $app-andamios-admin-primary,
+    accent: $app-andamios-admin-accent,
+    warn: $app-andamios-admin-warn,
   ),
   typography: mat.define-typography-config(),
   density: 0
@@ -33,5 +33,5 @@ $AdminPanel-theme: mat.define-light-theme((
 // Include theme styles for core and each component used in your app.
 // Alternatively, you can import and @include the theme mixins for each component
 // that you are using.
-@include mat.all-component-themes($AdminPanel-theme);
+@include mat.all-component-themes($app-andamios-admin-theme);
 

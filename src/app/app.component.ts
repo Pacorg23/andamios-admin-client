@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { NavbarComponent } from './componentes/navbar/navbar.component';
 
 @Component({
   selector: 'app-root',
@@ -10,9 +9,5 @@ import { NavbarComponent } from './componentes/navbar/navbar.component';
   styleUrl: './app.component.css'
 })
 export class AppComponent {
-  title = 'AdminPanel';
-
-  constructor(){}
-
-
+  title = 'app-andamios-admin';
 }

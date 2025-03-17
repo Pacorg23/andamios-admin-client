@@ -3,7 +3,6 @@ import { SolicitudContacto } from '../../../models/general/solicitud-contacto';
 import { ApiService } from '../../../services/api.service';
 import Swal from 'sweetalert2';
 import { MatIcon } from '@angular/material/icon';
-import { error } from 'console';
 import { ActivatedRoute } from '@angular/router';
 import { LoadingComponent } from '../../../effects/loading/loading.component';
 
