@@ -1,0 +1,66 @@
+<div class="contenedor mx-3 py-3">
+  <h1>Editar Pagina</h1>
+
+  <div class="button-container mb-3">
+    <button mat-fab extended type="button" class="btn btn-success main-add-button"
+      (click)="goTo(typeList)"><mat-icon>add</mat-icon> Agregar {{typeTitle}}</button>
+    @if(typeList === 'seccion') {
+    <button mat-fab extended type="button" class="btn btn-primary main-add-button"
+      (click)="goBack()"><mat-icon>arrow_back</mat-icon> Regresar a categoria</button>
+    } @else if(typeList === 'subseccion') {
+    <button mat-fab extended type="button" class="btn btn-primary main-add-button"
+      (click)="goBack()"><mat-icon>arrow_back</mat-icon> Regresar a seccion</button>
+    }
+  </div>
+
+  @if(typeList === 'categoria') {
+  @for (number of numbers; track number) {
+  <mat-card class="mb-3">
+    <mat-card-header>
+      <mat-card-title>Categoria</mat-card-title>
+    </mat-card-header>
+    <mat-card-actions align="end">
+      <button mat-fab extended type="button" class="btn btn-primary option-button mx-2"
+        (click)="getSections()"><mat-icon class="me-1">app_registration</mat-icon>Secciones</button>
+      <button mat-fab extended type="button" class="btn btn-danger option-button mx-2"><mat-icon
+          class="me-1">delete</mat-icon>Delete</button>
+      <!-- TODO: agregar if si hasSections is false -->
+      <button mat-fab extended type="button" class="btn btn-warning option-button mx-2"
+        (click)="editProcess()"><mat-icon class="me-1">edit</mat-icon>Edit</button>
+    </mat-card-actions>
+  </mat-card>
+  }
+  } @else if(typeList === 'seccion') {
+  @for (number of numbers; track number) {
+  <mat-card class="mb-3">
+    <mat-card-header>
+      <mat-card-title>Seccion</mat-card-title>
+    </mat-card-header>
+    <mat-card-actions align="end">
+      <button mat-fab extended type="button" class="btn btn-primary option-button mx-2"
+        (click)="getSubsections()"><mat-icon class="me-1">app_registration</mat-icon>Subsecciones</button>
+      <button mat-fab extended type="button" class="btn btn-danger option-button mx-2"
+        (click)="goTo(typeList)"><mat-icon class="me-1">delete</mat-icon>Delete</button>
+      <button mat-fab extended type="button" class="btn btn-warning option-button mx-2"
+        (click)="goTo(typeList)"><mat-icon class="me-1">edit</mat-icon>Edit</button>
+    </mat-card-actions>
+  </mat-card>
+  }
+  } @else if(typeList === 'subseccion') {
+  @for (number of numbers; track number) {
+  <mat-card class="mb-3">
+    <mat-card-header>
+      <mat-card-title>Subseccion</mat-card-title>
+    </mat-card-header>
+    <mat-card-actions align="end">
+      <button mat-fab extended type="button" class="btn btn-danger option-button mx-2"
+        (click)="goTo(typeList)"><mat-icon class="me-1">delete</mat-icon>Delete</button>
+      <button mat-fab extended type="button" class="btn btn-warning option-button mx-2"
+        (click)="goTo(typeList)"><mat-icon class="me-1">edit</mat-icon>Edit</button>
+    </mat-card-actions>
+  </mat-card>
+  }
+  } @else {
+  <p>NO PAGE AVAILABLE</p>
+  }
+</div>

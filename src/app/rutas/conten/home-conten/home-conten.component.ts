@@ -18,7 +18,7 @@ export class HomeContenComponent {
     {icon:'contacto.svg', title:'Contacto', description:'Buzon de solicitudes de contacto', url:'contacto/conten'},
     {icon: "cv.svg", title: "Solicitudes", description:"Muestra las solicitudes de empleo", url:"solicitudes/conten"},
     {icon:'negocio.svg', title:'Sucursales', description:'Edita las sucursales ', url:'sucursales/conten'},
-    {icon: 'page.svg', title: 'Página', description: 'Modifica tu pagina', url: 'secciones/conten'},
+    {icon: 'page.svg', title: 'Página', description: 'Modifica tu pagina', url: 'editor'},
   ]
 
   constructor() { }

@@ -4,12 +4,16 @@ import { Observable } from 'rxjs';
 import { Carrusel } from '../../../models/andamios/carrusel';
 import { Anuncio } from '../../../models/andamios/anuncio';
 
+import { ENV_CONSTANTS } from '../../../services/environment.service';
+
+const SERVICE_NAME = 'andamios';
+
 @Injectable({
   providedIn: 'root'
 })
 export class ApiAndamiosService {
 
-  private URL = 'http://localhost:3000/andamios/'
+  private URL: string;
 
   private httpOptions = {
     headers: new HttpHeaders({
@@ -17,7 +21,9 @@ export class ApiAndamiosService {
     })
   }
 
-  constructor(private http:HttpClient) { }
+  constructor(private http:HttpClient) {
+    this.URL = `${ENV_CONSTANTS.API_URL}:${ENV_CONSTANTS.PORT}/${SERVICE_NAME}/`;
+  }
 
   //CARRUSEL
   obtenerCarrusel():Observable<Carrusel[]>{
