@@ -1,0 +1,75 @@
+.file-input {
+  display: none;
+}
+
+.item {
+  position: relative;
+  width: 100px;
+  height: 100px;
+}
+
+.banner {
+  position: relative;
+  width: 600px;
+  height: auto;
+}
+
+.item img {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+}
+
+.edit_btn {
+  opacity: 0;
+  position: absolute;
+  z-index: 1;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+
+.edit_btn i {
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.banner:hover .edit_btn {
+  opacity: 1;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(57, 57, 57, 0.478);
+}
+
+.edit_btn i:hover {
+  color: var(--color-secundario);
+}
+
+.form-control:focus , .form-check-input:focus{
+  border-color: var(--color-secundario);
+  box-shadow: 0 0 0 0.25rem rgba(10, 76, 183, 0.25);
+}
+
+.form-check-input:checked{
+  background-color: var(--color-secundario);
+  border-color: var(--color-secundario);
+}
+
+.initial-form {
+  width: 100%;
+  padding: 10px 40px;
+}
+
+.confirm-button {
+  width: 10%;
+}
+
+.banner {
+  width: 600px;
+  height: 300px;
+}
