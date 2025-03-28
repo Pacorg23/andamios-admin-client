@@ -6,6 +6,7 @@ import { ContactoComponent } from "../Generales/contacto/contacto.component";
 import { SucursalesAndamiosComponent } from "../Generales/sucursales/sucursales-andamios.component";
 import { ContenidoFormComponent } from "./contenido-form/contenido-form.component";
 import { ContenedorContenComponent } from "./contenedor-conten/contenedor-conten.component";
+import { SeccionFormComponent } from "./seccion-form/seccion-form.component";
 
 export const routes: Routes = [
   { path: "", redirectTo: "home", pathMatch: "full"},
@@ -16,5 +17,6 @@ export const routes: Routes = [
   { path: "sucursales/:division", component: SucursalesAndamiosComponent },
   { path: "editor", component: ContenedorContenComponent },
   { path: "categoria", component: ContenidoFormComponent },
-  { path: "categoria/:name", component: ContenidoFormComponent }
+  { path: "categoria/:name", component: ContenidoFormComponent },
+  { path: "seccion/:nombreCategoria", component: SeccionFormComponent },
 ]

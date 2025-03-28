@@ -13,29 +13,32 @@
       <label for="floatingInput">Nombre de la categoria</label>
     </div>
     <div class="form-floating mb-3">
-      <input type="text" class="form-control" placeholder="titulo" [disabled]="true" [value]="formattedText">
+      <input type="text" class="form-control" placeholder="URL" [disabled]="true" [value]="formattedText">
       <label for="floatingInput">URL</label>
+    </div>
+
+    <div class="form-check mb-3">
+      <input class="form-check-input" type="checkbox" formControlName="isActive" id="flexCheckDefault">
+      <label class="form-check-label" for="flexCheckDefault">
+        ¿Estara activa la seccion?
+      </label>
     </div>
 
     <div class="bit-sectio mb-3">
       <div class="form-check form-check-inline">
-        <input class="form-check-input" type="radio" name="type" id="inlineRadio1" value="option1"
-          formControlName="type">
+        <input class="form-check-input" type="radio" name="type" id="inlineRadio1" value="A" formControlName="type">
         <label class="form-check-label" for="inlineRadio1">Tipo Ingenieria</label>
       </div>
       <div class="form-check form-check-inline">
-        <input class="form-check-input" type="radio" name="type" id="inlineRadio2" value="option2"
-          formControlName="type">
+        <input class="form-check-input" type="radio" name="type" id="inlineRadio2" value="B" formControlName="type">
         <label class="form-check-label" for="inlineRadio2">Tipo Manufactura</label>
       </div>
       <div class="form-check form-check-inline">
-        <input class="form-check-input" type="radio" name="type" id="inlineRadio3" value="option3"
-          formControlName="type">
+        <input class="form-check-input" type="radio" name="type" id="inlineRadio3" value="C" formControlName="type">
         <label class="form-check-label" for="inlineRadio3">Tipo Productos</label>
       </div>
       <div class="form-check form-check-inline">
-        <input class="form-check-input" type="radio" name="type" id="inlineRadio4" value="option4"
-          formControlName="type">
+        <input class="form-check-input" type="radio" name="type" id="inlineRadio4" value="D" formControlName="type">
         <label class="form-check-label" for="inlineRadio4">Tipo Certificaciones</label>
       </div>
     </div>
@@ -61,8 +64,8 @@
 
       <div class="item">
         <div class="file-input-container">
-          <button type="button" class="btn btn-success" (click)="generateClickToFile()">
-            <i class="material-icons">add</i>
+          <button type="button" class="btn btn-warning banner-btn" (click)="generateClickToFile()">
+            <i class="material-icons">attachment</i> Agregar banner
           </button>
           <input title="image" type="file" accept="image/*" class="file-input" id="file-input"
             (change)="saveImage($event)">
@@ -74,49 +77,5 @@
     <button type="button" class="btn btn-danger confirm-button mx-1" (click)="goTo('editor')">Cancelar</button>
     <button type="submit" class="btn btn-success confirm-button mx-1">Crear</button>
   </form>
-
-  <!--
-
-    <p>{{componentInfo?.type}}</p>
-
-  <form action="">
-
-    <div class="grid">
-      <div class="mb-3">
-        <label for="">Descripcion</label>
-        <div class="mb-3">
-          <editor apiKey="pdmcwg4496yv6p8pfgeue5qew4yqbpgszy9ycv6tgf1pwdxd" [init]="config"
-            formControlName="descripcion">
-          </editor>
-        </div>
-      </div>
-
-      @for (file of fileArray; track file; let i = $index) {
-      <div class="item" id="img">
-        <img src="{{file.url}}" alt="image" />
-        <div class="edit_btn">
-          <i class="material-icons" (click)="removeImageFromFileArray(file.fileId)">delete</i>
-          <i class="material-icons" (click)="changeImageFromFileArray(file.fileId)">edit</i>
-        </div>
-      </div>
-      } @empty {
-      <div class="item">
-        <p>No hay imagenes</p>
-      </div>
-      }
-
-      <div class="item">
-        <div class="file-input-container">
-          <button type="button" class="file-input-button" (click)="generateClickToFile()">
-            <i class="material-icons">add</i>
-          </button>
-          <input title="image" type="file" accept="image/*" class="file-input" id="file-input"
-            (change)="addImageToFileArray($event, fileArray.length + 1)">
-        </div>
-      </div>
-    </div>
-
-  </form>
-  -->
 
 </div>

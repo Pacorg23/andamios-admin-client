@@ -7,6 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
 import { ContenService } from '../service/conten.service';
 import Swal from 'sweetalert2';
+import { Seccion } from '../../../models/general/navbar';
 
 export enum ListEnum {
   Category = 'categoria',
@@ -37,14 +38,15 @@ export interface ItemInfo {
 })
 export class ContenedorContenComponent implements OnInit {
 
-  typeList: string;
-  categorias: Category[];
-  secciones: any[];
-  subsecciones: any[];
-  typeTitle: string;
-  sectionSelected: ItemInfo;
-  subsectionSelected: ItemInfo;
-  numbers = Array.from({ length: 21 }, (_, i) => i);
+  public typeList: string;
+  public categorias: Category[];
+  public secciones: Seccion[];
+  public subsecciones: Seccion[];
+  public typeTitle: string;
+  public sectionSelected: ItemInfo;
+  public subsectionSelected: ItemInfo;
+  public categoryTypeSelected: string;
+  public numbers = Array.from({ length: 21 }, (_, i) => i);
 
   constructor(private router: Router, private contenService: ContenService) {
     this.typeList = ListEnum.Category;
@@ -71,15 +73,17 @@ export class ContenedorContenComponent implements OnInit {
   }
 
   /**
-   * @description Dependiendo el tipo de lista es la accion a realizar
+   * @description Dependiendo el tipo de lista es la accion a realizar, pero siempre es crear
    * @param type tipo de lista
    * @param param parametro para la accion
    * @returns void
    */
   public goTo(type: string, param?: string): void {
-    if (_.isNil(param)) {
+    if (!_.isNil(param)) {
       this.router.navigate([`conten/${_.lowerCase(type)}`]);
     } else {
+      //PARAM es el tipo de categoria para mostarr el formulario de seccion o subseccion
+      param = _.lowerCase('Ejemplo');
       this.router.navigate([`conten/${_.lowerCase(type)}/${param}`]);
     }
   }
@@ -119,9 +123,10 @@ export class ContenedorContenComponent implements OnInit {
       id: category.id,
       comesFrom: category.title
     }
-    if(category.has_sections) {
-      //TODO get sections
-    }
+    // TODO recuerda que las secciones son de la categoria seleccionada y solo las de tipo B pueden tener subsecciones
+    this.categoryTypeSelected = category.tipo;
+    // TODO obtener secciones de la categoria seleccionada
+
   }
 
   /**
@@ -156,7 +161,31 @@ export class ContenedorContenComponent implements OnInit {
    * @param type tipo de elemento a eliminar
    * @returns void
    */
-  public deleteProcess(id: number, type: string): void {
-    //TODO delete process
+  public deleteProcess(id?: number, type?: string): void {
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: `¿Quieres eliminar la ${type} con id ${id}?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Eliminar',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        //TODO delete process
+        Swal.fire({
+          title: 'Eliminado',
+          text: `Se ha eliminado la ${type} con id ${id}`,
+          icon: 'success',
+          confirmButtonText: 'Aceptar'
+        });
+      } else {
+        Swal.fire({
+          title: 'Cancelado',
+          text: `No se ha eliminado la ${type} con id ${id}`,
+          icon: 'info',
+          confirmButtonText: 'Aceptar'
+        });
+      }
+    });
   }
 }

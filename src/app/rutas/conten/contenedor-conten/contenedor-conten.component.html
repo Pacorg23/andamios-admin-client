@@ -22,9 +22,8 @@
     <mat-card-actions align="end">
       <button mat-fab extended type="button" class="btn btn-primary option-button mx-2"
         (click)="getSections()"><mat-icon class="me-1">app_registration</mat-icon>Secciones</button>
-      <button mat-fab extended type="button" class="btn btn-danger option-button mx-2"><mat-icon
+      <button mat-fab extended type="button" class="btn btn-danger option-button mx-2" (click)="deleteProcess()"><mat-icon
           class="me-1">delete</mat-icon>Delete</button>
-      <!-- TODO: agregar if si hasSections is false -->
       <button mat-fab extended type="button" class="btn btn-warning option-button mx-2"
         (click)="editProcess()"><mat-icon class="me-1">edit</mat-icon>Edit</button>
     </mat-card-actions>
@@ -37,12 +36,13 @@
       <mat-card-title>Seccion</mat-card-title>
     </mat-card-header>
     <mat-card-actions align="end">
+      <!-- TODO solo las secciones de la categoria tipo B o manufactura pueden tener subsecciones -->
       <button mat-fab extended type="button" class="btn btn-primary option-button mx-2"
         (click)="getSubsections()"><mat-icon class="me-1">app_registration</mat-icon>Subsecciones</button>
       <button mat-fab extended type="button" class="btn btn-danger option-button mx-2"
-        (click)="goTo(typeList)"><mat-icon class="me-1">delete</mat-icon>Delete</button>
+        (click)="deleteProcess()"><mat-icon class="me-1">delete</mat-icon>Delete</button>
       <button mat-fab extended type="button" class="btn btn-warning option-button mx-2"
-        (click)="goTo(typeList)"><mat-icon class="me-1">edit</mat-icon>Edit</button>
+        (click)="goTo(typeList)"><mat-icon class="me-1">edit</mat-icon>Edit</button> <!--AQUI VA LA FUNCION editProcess-->
     </mat-card-actions>
   </mat-card>
   }
@@ -54,9 +54,9 @@
     </mat-card-header>
     <mat-card-actions align="end">
       <button mat-fab extended type="button" class="btn btn-danger option-button mx-2"
-        (click)="goTo(typeList)"><mat-icon class="me-1">delete</mat-icon>Delete</button>
+        (click)="deleteProcess()"><mat-icon class="me-1">delete</mat-icon>Delete</button>
       <button mat-fab extended type="button" class="btn btn-warning option-button mx-2"
-        (click)="goTo(typeList)"><mat-icon class="me-1">edit</mat-icon>Edit</button>
+        (click)="goTo(typeList)"><mat-icon class="me-1">edit</mat-icon>Edit</button> <!--AQUI VA LA FUNCION editProcess-->
     </mat-card-actions>
   </mat-card>
   }

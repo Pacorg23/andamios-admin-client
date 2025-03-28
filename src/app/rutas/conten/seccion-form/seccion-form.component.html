@@ -1,0 +1,96 @@
+<div class="form-container">
+  <!--TITLE-->
+  <div class="my-3 mx-4">
+    <h1>{{componentInfo?.action}} categoria {{componentInfo?.name}}</h1> <!--Seccion o subseccion y editar o crear-->
+  </div>
+
+  <form [formGroup]="sectionForm" (ngSubmit)="submitStage()">
+    <!--TITULO-->
+    <div class="form-floating mb-3">
+      <input type="text" class="form-control" placeholder="titulo" formControlName="title" [disabled]="false"
+        [(ngModel)]="urlPersonalized">
+      <label for="floatingInput">Nombre de la </label>
+    </div>
+    <!--URL-->
+    <div class="form-floating mb-3">
+      <input type="text" class="form-control" placeholder="URL" [disabled]="true" [value]="formattedText">
+      <label for="floatingInput">URL</label>
+    </div>
+    <!--DESCRIPCION-->
+    <div class="mb-3">
+      <label for="">Descripcion</label>
+      <div class="mb-3">
+        <editor apiKey="pdmcwg4496yv6p8pfgeue5qew4yqbpgszy9ycv6tgf1pwdxd" [init]="config" formControlName="description">
+        </editor>
+      </div>
+    </div>
+    <!--IMAGEN-->
+    <div class="mb-3">
+      <h5>Agregar imagen de banner</h5>
+      @if(presntationFile.url) {
+      <div class="banner">
+        <img src="{{presntationFile.url}}" alt="" class="banner">
+        <div class="edit_btn">
+          <i class="material-icons" (click)="removePresentationFile()">delete</i>
+        </div>
+      </div>
+      } @else {
+
+      <div class="item">
+        <div class="file-input-container">
+          <button type="button" class="btn btn-success banner-btn" (click)="generateClickToFile('presentation')">
+            <i class="material-icons">attachment</i> Agregar imagen de presentacion
+          </button>
+          <input title="image" type="file" accept="image/*" class="file-input" id="file-input-presentation"
+            (change)="presentationFileChange($event)">
+        </div>
+      </div>
+      }
+    </div>
+    <!--ARCHIVO-->
+    <div class="mb-3">
+      <h3>Agregar archivos</h3>
+      @if(sectionFile?.name) {
+      <h5>{{sectionFile.name}}</h5>
+      } @else {
+      <div class="item">
+        <div class="file-input-container">
+          <button type="button" class="btn btn-success banner-btn" (click)="generateClickToFile('document')">
+            <i class="material-icons">attachment</i> Agregar archivo
+          </button>
+          <input title="image" type="file" accept="image/*" class="file-input" id="file-input-document"
+            (change)="sectionFileChange($event)">
+        </div>
+      </div>
+      }
+    </div>
+    <!--ARRAY DE IMAGENES-->
+    <div class="mb-3">
+      <h5>Agregar imagenes</h5>
+      @for (file of fileArray; track file; let i = $index) {
+      <div class="item" id="img">
+        <img src="{{file.url}}" alt="image" />
+        <div class="edit_btn">
+          <i class="material-icons" (click)="removeImageFromFileArray(file.fileId)">delete</i>
+          <i class="material-icons" (click)="changeImageFromFileArray(file.fileId)">edit</i>
+        </div>
+      </div>
+      } @empty {
+      <div class="item">
+        <p>No hay imagenes</p>
+      </div>
+      }
+
+      <div class="item">
+        <div class="file-input-container">
+          <button type="button" class="file-input-button" (click)="generateClickToFile('array')">
+            <i class="material-icons">add</i>
+          </button>
+          <input title="image" type="file" accept="image/*" class="file-input" id="file-input-array"
+            (change)="addImageToFileArray($event, fileArray.length + 1)">
+        </div>
+      </div>
+    </div>
+
+  </form>
+</div>
