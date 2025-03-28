@@ -73,3 +73,10 @@
   width: 600px;
   height: 300px;
 }
+
+.banner-btn {
+  width: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

@@ -106,7 +106,7 @@ export class ContenidoFormComponent implements OnInit {
         text: 'Error al obtener la categoría'
       });
     }
-  );
+    );
   }
 
   /**
@@ -136,11 +136,11 @@ export class ContenidoFormComponent implements OnInit {
       name: ['', Validators.required],
       type: ['', Validators.required],
       description: ['', Validators.required],
-      img: ['', Validators.required],
+      isActive: [true, Validators.required],
+      img: [''],
     });
   }
 
-  //TODO send to sections
   /**
    * @description Simula el click a un archivo
    * @param {void}
@@ -148,32 +148,6 @@ export class ContenidoFormComponent implements OnInit {
    */
   public generateClickToFile(): void {
     document.getElementById('file-input').click();
-  }
-
-  //TODO send to sections
-  /**
-   * @description Agrega un archivo a la lista de archivos
-   * @param {Event} event - Evento del input file
-   * @param {number} newID - Nuevo ID del archivo
-   * @returns void
-   */
-  public addImageToFileArray(event: any, newID: number): void {
-    console.log('addImageToFileArray', event);
-    if (!_.isNil(event.target)) {
-      const newFile = _.head(event.target.files);
-      if (newFile) {
-        console.log('Filename', newFile.name);
-        this.fileArray.push({
-          name: newFile.name,
-          fileId: newID,
-          url: URL.createObjectURL(newFile),
-          file: newFile
-        });
-        this.cdRef.detectChanges();
-      }
-    } else {
-      console.error('Error al agregar imagen al array');
-    }
   }
 
   public saveImage(event: any): void {
@@ -186,6 +160,7 @@ export class ContenidoFormComponent implements OnInit {
           url: URL.createObjectURL(newFile),
           file: newFile
         };
+        this.categoryForm.get('img').patchValue(this.fileBanner.url);
         this.cdRef.detectChanges();
       }
     }
@@ -198,6 +173,7 @@ export class ContenidoFormComponent implements OnInit {
    */
   public removeImage(): void {
     this.fileBanner = { name: '', fileId: 0, url: '', file: null };
+    this.categoryForm.get('img').patchValue('');
   }
 
   /**
@@ -207,48 +183,11 @@ export class ContenidoFormComponent implements OnInit {
    */
   public editImage(): void {
     this.fileBanner = { name: '', fileId: 0, url: '', file: null };
+    this.categoryForm.get('img').patchValue('');
 
     setTimeout(() => {
       this.generateClickToFile();
     }, 500);
-  }
-
-  // TODO send to sections
-  /**
-   * @description Elimina un archivo de la lista de archivos
-   * @param {number} fileId - ID del archivo a eliminar
-   * @returns void
-   */
-  public removeImageFromFileArray(fileId: number): void {
-    this.fileArray = this.fileArray.filter((file) => file.fileId !== fileId);
-  }
-
-  // TODO send to sections
-  /**
-   * @description Cambia un archivo de la lista de archivos
-   * @param {Event} event - Evento del input file
-   * @param {number} fileId - ID del archivo a cambiar
-   * @returns void
-   */
-  public changeImageFromFileArray(fileId: number): void {
-    console.log('changeImageFromFileArray', fileId);
-    const input = document.createElement('input');
-    input.setAttribute('type', 'file');
-    input.setAttribute('accept', 'image/*');
-
-    input.addEventListener('change', (e) => {
-      const target = event.target as HTMLInputElement;
-
-      if (target.files && target.files.length > 0) {
-        const newFile = _.head(target.files);
-        if (newFile) {
-          this.removeImageFromFileArray(fileId);
-          this.addImageToFileArray(e, fileId);
-        }
-      }
-    });
-
-    input.click();
   }
 
   /**
@@ -270,34 +209,43 @@ export class ContenidoFormComponent implements OnInit {
    * @param {void}
    * @returns void
    */
-  public nextStage() {
-    const formData = new FormData();
-    formData.append('title', this.categoryForm.get('name').value);
-    formData.append('url', this.formattedText);
-    formData.append('tipo', this.categoryForm.get('type').value);
-    formData.append('description', this.categoryForm.get('description').value);
-    formData.append('img', this.fileBanner.file);
+  public nextStage(): void {
+    if (this.categoryForm.valid) {
+      console.log('Formulario valido', this.categoryForm.value);
+      const formData = new FormData();
+      formData.append('title', this.categoryForm.get('name').value);
+      formData.append('url', this.formattedText);
+      formData.append('tipo', this.categoryForm.get('type').value);
+      formData.append('description', this.categoryForm.get('description').value);
+      formData.append('img', this.fileBanner.file);
 
-    // TODO if para distinguir entre acciones osea editar o crear
+      // TODO if para distinguir entre acciones osea editar o crear
 
-    this.contenService.initCategory(formData).subscribe((categoriaCreada) => {
+      this.contenService.initCategory(formData).subscribe((categoriaCreada) => {
+        Swal.fire({
+          icon: 'success',
+          title: 'Correcto',
+          text: 'Categoría inicializada correctamente'
+        }).then(() => {
+          this.componentInfo.name = categoriaCreada.title;
+          this.componentInfo.type = categoriaCreada.tipo;
+          this.router.navigate([`conten/editor`]);
+        });
+      }, (error) => {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Error al iniciar la categoría'
+        })
+      }
+      );
+    } else {
       Swal.fire({
-        icon: 'success',
-        title: 'Correcto',
-        text: 'Categoría inicializada correctamente'
-      }).then(() => {
-        this.componentInfo.name = categoriaCreada.title;
-        this.componentInfo.type = categoriaCreada.tipo;
-        this.router.navigate([`conten/editor`]);
-      });
-    }, (error) => {
-      Swal.fire({
-        icon: 'error',
+        icon: 'warning',
         title: 'Error',
-        text: 'Error al inicial la categoría'
-      })
+        text: 'No se ha rellenado el formulario correctamente'
+      });
     }
-    );
   }
 
   /**
@@ -305,7 +253,7 @@ export class ContenidoFormComponent implements OnInit {
    * @param {string} direction - Direction to go
    * @returns void
    */
-  goTo(direction: string): void {
+  public goTo(direction: string): void {
     this.router.navigate([`conten/${direction}`]);
   }
 
