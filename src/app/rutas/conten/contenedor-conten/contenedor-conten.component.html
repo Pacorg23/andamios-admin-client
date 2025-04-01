@@ -14,26 +14,26 @@
   </div>
 
   @if(typeList === 'categoria') {
-  @for (number of numbers; track number) {
+  @for (categoria of categorias; track categoria) {
   <mat-card class="mb-3">
     <mat-card-header>
-      <mat-card-title>Categoria</mat-card-title>
+      <mat-card-title>{{ categoria.title }}</mat-card-title>
     </mat-card-header>
     <mat-card-actions align="end">
       <button mat-fab extended type="button" class="btn btn-primary option-button mx-2"
-        (click)="getSections()"><mat-icon class="me-1">app_registration</mat-icon>Secciones</button>
-      <button mat-fab extended type="button" class="btn btn-danger option-button mx-2" (click)="deleteProcess()"><mat-icon
+        (click)="getSections(categoria)"><mat-icon class="me-1">app_registration</mat-icon>Secciones</button>
+      <button mat-fab extended type="button" class="btn btn-danger option-button mx-2" (click)="deleteProcess(categoria.id)"><mat-icon
           class="me-1">delete</mat-icon>Delete</button>
       <button mat-fab extended type="button" class="btn btn-warning option-button mx-2"
-        (click)="editProcess()"><mat-icon class="me-1">edit</mat-icon>Edit</button>
+        (click)="editProcess(categoria.id)"><mat-icon class="me-1">edit</mat-icon>Edit</button>
     </mat-card-actions>
   </mat-card>
   }
   } @else if(typeList === 'seccion') {
-  @for (number of numbers; track number) {
+    @for (seccion of secciones; track seccion) {
   <mat-card class="mb-3">
     <mat-card-header>
-      <mat-card-title>Seccion</mat-card-title>
+        <mat-card-title>{{ seccion.title }}</mat-card-title>
     </mat-card-header>
     <mat-card-actions align="end">
       <!-- TODO solo las secciones de la categoria tipo B o manufactura pueden tener subsecciones -->
@@ -46,8 +46,8 @@
     </mat-card-actions>
   </mat-card>
   }
-  } @else if(typeList === 'subseccion') {
-  @for (number of numbers; track number) {
+  } @else if(typeList === 'subseccion' && categoryTypeSelected == 'B') {
+  @for (subseccion of subsecciones; track subseccion) {
   <mat-card class="mb-3">
     <mat-card-header>
       <mat-card-title>Subseccion</mat-card-title>

@@ -13,6 +13,9 @@
       <label for="floatingInput">Nombre de la categoria</label>
     </div>
     <div class="form-floating mb-3">
+      <input type="text" class="form-control" placeholder="titulo" formControlName="id" [hidden]="true">
+    </div>
+    <div class="form-floating mb-3">
       <input type="text" class="form-control" placeholder="URL" [disabled]="true" [value]="formattedText">
       <label for="floatingInput">URL</label>
     </div>

@@ -8,6 +8,7 @@ import { Router } from '@angular/router';
 import { ContenService } from '../service/conten.service';
 import Swal from 'sweetalert2';
 import { Seccion } from '../../../models/general/navbar';
+import { Section } from '../models/seccion';
 
 export enum ListEnum {
   Category = 'categoria',
@@ -40,7 +41,7 @@ export class ContenedorContenComponent implements OnInit {
 
   public typeList: string;
   public categorias: Category[];
-  public secciones: Seccion[];
+  public secciones: Section[];
   public subsecciones: Seccion[];
   public typeTitle: string;
   public sectionSelected: ItemInfo;
@@ -52,6 +53,7 @@ export class ContenedorContenComponent implements OnInit {
     this.typeList = ListEnum.Category;
     this.typeTitle = _.capitalize(this.typeList);
     this.categorias = [];
+    this.secciones = [];
   }
 
   ngOnInit(): void {
@@ -61,6 +63,7 @@ export class ContenedorContenComponent implements OnInit {
   public getCategorias(): void {
     this.contenService.getCategories().subscribe((response) => {
       this.categorias = response;
+      console.log(this.categorias)
     }, (error) => {
       Swal.fire({
         title: 'Error',
@@ -78,13 +81,13 @@ export class ContenedorContenComponent implements OnInit {
    * @param param parametro para la accion
    * @returns void
    */
-  public goTo(type: string, param?: string): void {
-    if (!_.isNil(param)) {
+  public goTo(type: string, param?: number): void {
+    if (!param) {
       this.router.navigate([`conten/${_.lowerCase(type)}`]);
     } else {
       //PARAM es el tipo de categoria para mostarr el formulario de seccion o subseccion
       param = _.lowerCase('Ejemplo');
-      this.router.navigate([`conten/${_.lowerCase(type)}/${param}`]);
+      this.router.navigate([`conten/${_.lowerCase(type)}/${this.sectionSelected.id}`]);
     }
   }
 
@@ -126,7 +129,17 @@ export class ContenedorContenComponent implements OnInit {
     // TODO recuerda que las secciones son de la categoria seleccionada y solo las de tipo B pueden tener subsecciones
     this.categoryTypeSelected = category.tipo;
     // TODO obtener secciones de la categoria seleccionada
-
+    this.contenService.getSectionsById(this.sectionSelected.id).subscribe((response) => {
+      this.secciones = response;
+    }, (error) => {
+      Swal.fire({
+        title: 'Error',
+        text: 'Error al obtener las categorias',
+        icon: 'error',
+        confirmButtonText: 'Aceptar'
+      });
+    }
+  );
   }
 
   /**
@@ -150,9 +163,8 @@ export class ContenedorContenComponent implements OnInit {
    * @param title titulo de la categoria, seccion o subseccion
    * @returns void
    */
-  public editProcess(title?: string): void {
-    title = 'example';
-    this.router.navigate([`conten/${_.lowerCase(this.typeList)}/${_.lowerCase(title)}`]); //Ejem conten/categoria/manufactura
+  public editProcess(id?: number): void {
+    this.router.navigate([`conten/${_.lowerCase(this.typeList)}/${id}`]); //Ejem conten/categoria/manufactura
   }
 
   /**
@@ -171,13 +183,26 @@ export class ContenedorContenComponent implements OnInit {
       cancelButtonText: 'Cancelar'
     }).then((result) => {
       if (result.isConfirmed) {
+        this.contenService.deleteCategories(id).subscribe((response) => {
+        }, (error) => {
+          Swal.fire({
+            title: 'Error',
+            text: 'Error al obtener las categorias',
+            icon: 'error',
+            confirmButtonText: 'Aceptar'
+          });
+        }
+      );
         //TODO delete process
         Swal.fire({
           title: 'Eliminado',
           text: `Se ha eliminado la ${type} con id ${id}`,
           icon: 'success',
           confirmButtonText: 'Aceptar'
-        });
+        }).then(()=>{
+          this.getCategorias()
+        })
+
       } else {
         Swal.fire({
           title: 'Cancelado',
