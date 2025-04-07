@@ -8,6 +8,7 @@ import { ConstantsConten } from '../constantes-conten';
 import _ from 'lodash';
 import { ContenService } from '../service/conten.service';
 import Swal from 'sweetalert2';
+import { Category } from '../models/category';
 
 export interface FileObject {
   name: string,
@@ -20,14 +21,36 @@ export class ComponentInfo {
   action: string;
   type: string;
   name: string;
+  id: number;
 
   constructor() {
     this.action = '';
     this.type = '';
     this.name = '';
+    this.id = 0;
   }
 }
+function base64ToFile(base64String: string, fileName: string): File {
+  // Remove the data URL prefix (e.g., "data:image/png;base64,")
+  const base64Data = base64String.split(',')[1];
 
+  // Decode the base64 string to a binary string
+  const byteCharacters = atob(base64Data);
+
+  // Convert the binary string into an array of bytes
+  const byteArrays = new Uint8Array(byteCharacters.length);
+  for (let i = 0; i < byteCharacters.length; i++) {
+      byteArrays[i] = byteCharacters.charCodeAt(i);
+  }
+
+  // Create a Blob from the byte array
+  const blob = new Blob([byteArrays], { type: 'application/octet-stream' });
+
+  // Convert the Blob into a File (you can change the type to match your file type)
+  const file = new File([blob], fileName, { type: blob.type });
+
+  return file;
+}
 @Component({
   selector: 'app-contenido-form',
   standalone: true,
@@ -35,6 +58,8 @@ export class ComponentInfo {
   templateUrl: './contenido-form.component.html',
   styleUrl: './contenido-form.component.css'
 })
+
+
 export class ContenidoFormComponent implements OnInit {
 
   public componentInfo: ComponentInfo;
@@ -43,6 +68,7 @@ export class ContenidoFormComponent implements OnInit {
   public categoryForm: FormGroup;
   public stage: string;
   public urlPersonalized: string;
+  public categoria: Category;
 
   //Configuracion del editor
   public config: EditorComponent['init'] = {
@@ -108,6 +134,7 @@ export class ContenidoFormComponent implements OnInit {
     }
     );
   }
+  
 
   /**
    * @description Determina si se va a editar o crear un contenido y que tipo es
@@ -117,26 +144,56 @@ export class ContenidoFormComponent implements OnInit {
   public initialiceEditor(): void {
     this.route.params.subscribe(params => {
       this.stage = ConstantsConten.INIT_STAGE;
-      if (_.isNil(params["name"])) {
+      if (_.isNil(params["id"])) {
         this.componentInfo.action = ConstantsConten.CREATE_TITLE;
       } else {
-        this.componentInfo.name = _.lowerCase(params["name"]);
+        this.componentInfo.id = _.lowerCase(params["id"]);
         this.componentInfo.action = ConstantsConten.EDIT_TITLE;
         //TODO get category
+        this.contenService.getCategoriesById(this.componentInfo.id).subscribe((response) => {
+          this.categoria = response[0];
+          this.componentInfo.name = this.categoria.title
+          const newFile = base64ToFile(this.categoria.img, "editImg");
+          this.categoryForm.setValue({
+            id: _.lowerCase(params["id"]),
+            name: this.categoria.title,
+            type:  this.categoria.tipo.split('')[0],
+            description: this.categoria.description,
+            isActive: this.categoria.is_active,
+            img: this.categoria.img.split(',')[1]
+          })
+          
+          this.fileBanner = {
+            name: "editImg",
+            fileId: 0,
+            url: URL.createObjectURL(newFile),
+            file: newFile
+          };
+          this.categoryForm.get('img').patchValue(this.categoria.img.split(',')[1]);
+          this.cdRef.detectChanges();
+        }, (error) => {
+          Swal.fire({
+            title: 'Error',
+            text: 'Error al obtener las categorias',
+            icon: 'error',
+            confirmButtonText: 'Aceptar'
+          });
+        }
+        )
       }
     });
   }
-
   /**
    * @description Inicializa el formulario de categorias
    * @param {void}
    */
   public initialForm(): void {
     this.categoryForm = this.formBuilder.group({
+      id: [''],
       name: ['', Validators.required],
       type: ['', Validators.required],
       description: ['', Validators.required],
-      isActive: [true, Validators.required],
+      isActive: [true],
       img: [''],
     });
   }
@@ -211,6 +268,7 @@ export class ContenidoFormComponent implements OnInit {
    */
   public nextStage(): void {
     if (this.categoryForm.valid) {
+
       console.log('Formulario valido', this.categoryForm.value);
       const formData = new FormData();
       formData.append('title', this.categoryForm.get('name').value);
@@ -220,25 +278,49 @@ export class ContenidoFormComponent implements OnInit {
       formData.append('img', this.fileBanner.file);
 
       // TODO if para distinguir entre acciones osea editar o crear
+      if (this.componentInfo.action == ConstantsConten.EDIT_TITLE) {
+        formData.append('id', this.categoryForm.get('id').value);
+        this.contenService.setCategory(formData).subscribe((categoriaCreada) => {
+          console.log(this.fileBanner.file)
+          Swal.fire({
+            icon: 'success',
+            title: 'Correcto',
+            text: 'Categoría inicializada correctamente'
+          }).then(() => {
+            this.componentInfo.name = categoriaCreada.title;
+            this.componentInfo.type = categoriaCreada.tipo;
+            this.router.navigate([`conten/editor`]);
+          });
+        }, (error) => {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Error al iniciar la categoría ' + error.message
+          })
+        }
+        );
 
-      this.contenService.initCategory(formData).subscribe((categoriaCreada) => {
-        Swal.fire({
-          icon: 'success',
-          title: 'Correcto',
-          text: 'Categoría inicializada correctamente'
-        }).then(() => {
-          this.componentInfo.name = categoriaCreada.title;
-          this.componentInfo.type = categoriaCreada.tipo;
-          this.router.navigate([`conten/editor`]);
-        });
-      }, (error) => {
-        Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: 'Error al iniciar la categoría'
-        })
+      } else {
+
+        this.contenService.initCategory(formData).subscribe((categoriaCreada) => {
+          Swal.fire({
+            icon: 'success',
+            title: 'Correcto',
+            text: 'Categoría inicializada correctamente'
+          }).then(() => {
+            this.componentInfo.name = categoriaCreada.title;
+            this.componentInfo.type = categoriaCreada.tipo;
+            this.router.navigate([`conten/editor`]);
+          });
+        }, (error) => {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Error al iniciar la categoría'
+          })
+        }
+        );
       }
-      );
     } else {
       Swal.fire({
         icon: 'warning',

@@ -3,13 +3,16 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { Category } from '../models/category';
+import { Seccion } from '../../../models/general/navbar';
+import { Section } from '../models/seccion';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ContenService {
 
-  private URL = 'http://localhost:3032/api/formdata'; //http://localhost:3000/conten/
+  // private URL = 'http://localhost:3032/api/formdata'; //http://localhost:3000/conten/
+  private URL = 'http://localhost:3000/conten';
 
   private httpOptions = {
     headers: new HttpHeaders({
@@ -18,14 +21,33 @@ export class ContenService {
   }
 
   constructor(private http: HttpClient) { }
-
+  //Categorias
   /**
    * @description Inicia una categoría
    * @param {FormData} categoria - Categoría a iniciar
    * @returns {Observable<Category>} - Categoría creada
    */
   public initCategory(categoria: FormData): Observable<Category> {
+    console.log(categoria)
     return this.http.post<Category>(`${this.URL}/initCategory`, categoria); //initCategory
+  }
+  /**
+   * @description Inicia una categoría
+   * @param {FormData} categoria - Categoría a iniciar
+   * @returns {Observable<Category>} - Categoría creada
+   */
+  public setCategory(categoria: FormData): Observable<Category> {
+    console.log(categoria)
+    return this.http.put<Category>(`${this.URL}/setCategory`, categoria); //initCategory
+  }
+  /**
+   * @description Inicia una categoría
+   * @param {FormData} categoria - Categoría a iniciar
+   * @returns {Observable<Category>} - Categoría creada
+   */
+  public addImage(categoria: FormData): Observable<Category> {
+    console.log(categoria)
+    return this.http.put<Category>(`${this.URL}/setCategory`, categoria); //initCategory
   }
 
   /**
@@ -44,5 +66,30 @@ export class ContenService {
    */
   public getCategory(name: string): Observable<Category> {
     return this.http.get<Category>(`${this.URL}/getCategory/${name}`);
+  }
+  public getCategoriesById(id: number): Observable<Category> {
+    return this.http.get<Category>(`${this.URL}/getCategoriesById/${id}`);
+  }
+  
+  public deleteCategories(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.URL}/deleteCategories/${id}`);
+  }
+  //Secciones
+  /**
+   * @description Obtiene una categoría
+   * @param {string} name - Nombre de la categoría
+   * @returns {Observable<Category>} - Categoría
+   */
+  public getSectionsById(id: Number): Observable<Section[]> {
+    return this.http.get<Section[]>(`${this.URL}/getSectionsById/${id}`);
+  }
+  /**
+   * @description Inicia una seccion
+   * @param {FormData} categoria - Seccion a iniciar
+   * @returns {Observable<Section>} - Seccion creada
+   */
+  public initSection(seccion: FormData): Observable<Section> {
+    console.log(seccion)
+    return this.http.post<Section>(`${this.URL}/initSection`, seccion); //initCategory
   }
 }

@@ -17,6 +17,6 @@ export const routes: Routes = [
   { path: "sucursales/:division", component: SucursalesAndamiosComponent },
   { path: "editor", component: ContenedorContenComponent },
   { path: "categoria", component: ContenidoFormComponent },
-  { path: "categoria/:name", component: ContenidoFormComponent },
+  { path: "categoria/:id", component: ContenidoFormComponent },
   { path: "seccion/:nombreCategoria", component: SeccionFormComponent },
 ]
