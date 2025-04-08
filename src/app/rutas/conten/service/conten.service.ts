@@ -3,8 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { Category } from '../models/category';
-import { Seccion } from '../../../models/general/navbar';
-import { Section } from '../models/seccion';
+import { Seccion } from '../models/seccion';
 
 @Injectable({
   providedIn: 'root',
@@ -70,7 +69,7 @@ export class ContenService {
   public getCategoriesById(id: number): Observable<Category> {
     return this.http.get<Category>(`${this.URL}/getCategoriesById/${id}`);
   }
-  
+
   public deleteCategories(id: number): Observable<void> {
     return this.http.delete<void>(`${this.URL}/deleteCategories/${id}`);
   }
@@ -80,16 +79,16 @@ export class ContenService {
    * @param {string} name - Nombre de la categoría
    * @returns {Observable<Category>} - Categoría
    */
-  public getSectionsById(id: Number): Observable<Section[]> {
-    return this.http.get<Section[]>(`${this.URL}/getSectionsById/${id}`);
+  public getSectionsById(id: Number): Observable<Seccion[]> {
+    return this.http.get<Seccion[]>(`${this.URL}/getSectionsById/${id}`);
   }
   /**
    * @description Inicia una seccion
    * @param {FormData} categoria - Seccion a iniciar
    * @returns {Observable<Section>} - Seccion creada
    */
-  public initSection(seccion: FormData): Observable<Section> {
+  public initSection(seccion: FormData): Observable<Seccion> {
     console.log(seccion)
-    return this.http.post<Section>(`${this.URL}/initSection`, seccion); //initCategory
+    return this.http.post<Seccion>(`${this.URL}/initSection`, seccion); //initCategory
   }
 }

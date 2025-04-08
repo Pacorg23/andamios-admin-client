@@ -7,8 +7,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
 import { ContenService } from '../service/conten.service';
 import Swal from 'sweetalert2';
-import { Seccion } from '../../../models/general/navbar';
-import { Section } from '../models/seccion';
+import { Seccion } from '../models/seccion';
+import { ConstantsConten } from '../constantes-conten';
 
 export enum ListEnum {
   Category = 'categoria',
@@ -25,7 +25,6 @@ export interface ListInfo {
 export interface ItemInfo {
   id: number;
   title: string;
-  comesFrom: string;
   type?: string;
 }
 
@@ -41,10 +40,11 @@ export class ContenedorContenComponent implements OnInit {
 
   public typeList: string;
   public categorias: Category[];
-  public secciones: Section[];
+  public secciones: Seccion[];
   public subsecciones: Seccion[];
   public typeTitle: string;
   public sectionSelected: ItemInfo;
+  public categorySelected: ItemInfo;
   public subsectionSelected: ItemInfo;
   public categoryTypeSelected: string;
   public numbers = Array.from({ length: 21 }, (_, i) => i);
@@ -57,13 +57,14 @@ export class ContenedorContenComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.getCategorias();
+    if(_.isEqual(this.typeList, ListEnum.Category)){
+      this.getCategorias();
+    }
   }
 
   public getCategorias(): void {
     this.contenService.getCategories().subscribe((response) => {
       this.categorias = response;
-      console.log(this.categorias)
     }, (error) => {
       Swal.fire({
         title: 'Error',
@@ -81,13 +82,12 @@ export class ContenedorContenComponent implements OnInit {
    * @param param parametro para la accion
    * @returns void
    */
-  public goTo(type: string, param?: number): void {
-    if (!param) {
+  public goTo(type: string): void {
+
+    if (_.isNil(this.categorySelected?.id)) {
       this.router.navigate([`conten/${_.lowerCase(type)}`]);
     } else {
-      //PARAM es el tipo de categoria para mostarr el formulario de seccion o subseccion
-      param = _.lowerCase('Ejemplo');
-      this.router.navigate([`conten/${_.lowerCase(type)}/${this.sectionSelected.id}`]);
+      this.router.navigate([`conten/${_.lowerCase(type)}/${this.categorySelected.id}`]);
     }
   }
 
@@ -101,7 +101,8 @@ export class ContenedorContenComponent implements OnInit {
       case ListEnum.Section:
         this.typeList = ListEnum.Category;
         this.typeTitle = _.capitalize(this.typeList);
-        //TODO get categories
+        this.getCategorias();
+        this.cleanCategoryObject();
         break;
       case ListEnum.Subsection:
         this.typeList = ListEnum.Section;
@@ -114,6 +115,18 @@ export class ContenedorContenComponent implements OnInit {
   }
 
   /**
+   * @description Limpia el objeto de categoria seleccionada
+   * @param void
+   * @returns void
+   */
+  private cleanCategoryObject(): void {
+    this.categorySelected = {
+      title: '',
+      id: undefined
+    }
+  }
+
+  /**
    * @description Obtiene las secciones de una categoria
    * @param category categoria seleccionada
    * @returns void
@@ -121,15 +134,14 @@ export class ContenedorContenComponent implements OnInit {
   public getSections(category?: Category): void {
     this.typeList = ListEnum.Section;
     this.typeTitle = _.capitalize(this.typeList);
-    this.sectionSelected = {
+    this.categorySelected = {
       title: category.title,
-      id: category.id,
-      comesFrom: category.title
+      id: category.id
     }
     // TODO recuerda que las secciones son de la categoria seleccionada y solo las de tipo B pueden tener subsecciones
     this.categoryTypeSelected = category.tipo;
     // TODO obtener secciones de la categoria seleccionada
-    this.contenService.getSectionsById(this.sectionSelected.id).subscribe((response) => {
+    this.contenService.getSectionsById(this.categorySelected.id).subscribe((response) => {
       this.secciones = response;
     }, (error) => {
       Swal.fire({
@@ -152,8 +164,7 @@ export class ContenedorContenComponent implements OnInit {
     this.typeTitle = _.capitalize(this.typeList);
     this.subsectionSelected = {
       title: section.title,
-      id: section.id,
-      comesFrom: section.title
+      id: section.id
     }
     //TODO get subsections
   }
@@ -164,7 +175,13 @@ export class ContenedorContenComponent implements OnInit {
    * @returns void
    */
   public editProcess(id?: number): void {
-    this.router.navigate([`conten/${_.lowerCase(this.typeList)}/${id}`]); //Ejem conten/categoria/manufactura
+    if (_.isEqual(this.typeList, ListEnum.Category)) {
+      this.router.navigate([`conten/${_.lowerCase(this.typeList)}/${id}`]);
+    } else if (_.isEqual(this.typeList, ListEnum.Section)) {
+      this.router.navigate([`conten/${_.lowerCase(this.typeList)}/${this.categorySelected.id}/${id}`]);
+    } else if (_.isEqual(this.typeList, ListEnum.Subsection)) {
+      this.router.navigate([`conten/${_.lowerCase(this.typeList)}/${this.categorySelected.id}/${id}`]);
+    }
   }
 
   /**
