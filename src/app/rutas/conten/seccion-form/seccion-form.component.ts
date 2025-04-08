@@ -1,10 +1,12 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { EditorComponent, EditorModule } from '@tinymce/tinymce-angular';
 import { ContenService } from '../service/conten.service';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import _ from 'lodash';
+import { ConstantsConten } from '../constantes-conten';
+import { Category } from '../models/category';
 
 export class ComponentInfo {
   action: string;
@@ -40,6 +42,7 @@ export class SeccionFormComponent implements OnInit {
   public sectionFile: FileObject;
   public urlPersonalized: string;
   public sectionForm: FormGroup;
+  public comesForm: Category; //Categoria a la que pertenece la seccion
 
   //Configuracion del editor
   public config: EditorComponent['init'] = {
@@ -73,7 +76,7 @@ export class SeccionFormComponent implements OnInit {
   constructor(private cdRef: ChangeDetectorRef,
     private route: ActivatedRoute,
     private contenService: ContenService,
-    private formBuilder: FormBuilder) {
+    private formBuilder: FormBuilder, private router: Router) {
     this.componentInfo = new ComponentInfo();
     this.presntationFile = {
       name: '',
@@ -81,22 +84,29 @@ export class SeccionFormComponent implements OnInit {
       url: '',
       file: new File([], '')
     };
+
+    this.sectionFile = {
+      name: '',
+      fileId: 0,
+      url: '',
+      file: new File([], '')
+    }
     this.urlPersonalized = '';
   }
 
   public ngOnInit(): void {
     this.initialiceForm();
+    this.initializeComponent();
   }
 
   public initializeComponent(): void {
     this.route.params.subscribe(params => {
-      const nombreCategoria = params['nombreCategoria'];
-      //TODO Obtener el tipo de categoria, crear servicio en especifico
-      const tipoExample = 'A'
-
-      this.componentInfo.name = nombreCategoria;
-
-
+      console.log('Params:', params);
+      const nombreCategoria = params['categoriaId'];
+      console.log('Id categoria:', nombreCategoria);
+      //TODO obten la informacion de la categoria por id y estas dos lineas debes estar encerradas por esta accion
+      //this.componentInfo.name = nombreCategoria;
+      this.componentInfo.action = ConstantsConten.CREATE_TITLE;
     });
   }
 
@@ -167,13 +177,28 @@ export class SeccionFormComponent implements OnInit {
    */
   public sectionFileChange(event: any): void {
     const file = event.target.files[0];
+    console.log('sectionFileChange', file);
     if (file) {
       this.sectionFile.name = file.name;
       this.sectionFile.fileId = 0;
       this.sectionFile.url = URL.createObjectURL(file);
       this.sectionFile.file = file;
-      this.sectionForm.get('file')?.patchValue(this.fileArray);
+      this.sectionForm.get('file')?.patchValue(this.sectionFile.url);
     }
+  }
+
+  /**
+   * @description Elimina el archivo de la seccion
+   * @param {void}
+   */
+  public removeFile(): void {
+    this.sectionFile = {
+      name: '',
+      fileId: 0,
+      url: '',
+      file: new File([], '')
+    };
+    this.sectionForm.get('file')?.patchValue('');
   }
 
   /**
@@ -276,5 +301,25 @@ export class SeccionFormComponent implements OnInit {
    */
   public submitStage(): void {
     console.log(this.sectionForm.value);
+    const formData = new FormData();
+    formData.append('title', this.sectionForm.get('title')?.value);
+    formData.append('url', this.sectionForm.get('url')?.value);
+    formData.append('description', this.sectionForm.get('description')?.value);
+    formData.append('banner', this.presntationFile.file);
+    formData.append('archivo', this.sectionFile.file);
+    for (let i = 0; i < this.fileArray.length; i++) {
+      formData.append('img'+i, this.fileArray[i].file);
+    }
+
+    //TODO enviar objeto seccion a el servicio para crear la seccion
+  }
+
+  /**
+   * @description Navigate into conten
+   * @param {string} direction - Direction to go
+   * @returns void
+   */
+  public goTo(direction: string): void {
+    this.router.navigate([`conten/${direction}`]);
   }
 }

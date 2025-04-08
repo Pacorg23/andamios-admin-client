@@ -18,5 +18,6 @@ export const routes: Routes = [
   { path: "editor", component: ContenedorContenComponent },
   { path: "categoria", component: ContenidoFormComponent },
   { path: "categoria/:id", component: ContenidoFormComponent },
-  { path: "seccion/:nombreCategoria", component: SeccionFormComponent },
+  { path: "seccion/:categoriaId", component: SeccionFormComponent },
+  { path: "seccion/:categoriaId/:seccionName", component: SeccionFormComponent },
 ]
