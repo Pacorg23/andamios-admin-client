@@ -30,6 +30,15 @@ export class ComponentInfo {
     this.id = 0;
   }
 }
+enum CategoriesTypes {
+  "A" = "A",
+  "B" = "B",
+  "C" = "C",
+  "D" = "D",
+}
+function isValueInEnum(value: string, enumObj: object): boolean {
+  return Object.values(enumObj).includes(value);
+}
 function base64ToFile(base64String: string, fileName: string): File {
   // Remove the data URL prefix (e.g., "data:image/png;base64,")
   const base64Data = base64String.split(',')[1];
@@ -40,7 +49,7 @@ function base64ToFile(base64String: string, fileName: string): File {
   // Convert the binary string into an array of bytes
   const byteArrays = new Uint8Array(byteCharacters.length);
   for (let i = 0; i < byteCharacters.length; i++) {
-      byteArrays[i] = byteCharacters.charCodeAt(i);
+    byteArrays[i] = byteCharacters.charCodeAt(i);
   }
 
   // Create a Blob from the byte array
@@ -134,7 +143,7 @@ export class ContenidoFormComponent implements OnInit {
     }
     );
   }
-  
+
 
   /**
    * @description Determina si se va a editar o crear un contenido y que tipo es
@@ -149,28 +158,30 @@ export class ContenidoFormComponent implements OnInit {
       } else {
         this.componentInfo.id = _.lowerCase(params["id"]);
         this.componentInfo.action = ConstantsConten.EDIT_TITLE;
-        //TODO get category
         this.contenService.getCategoriesById(this.componentInfo.id).subscribe((response) => {
-          this.categoria = response[0];
+          this.categoria = response;
           this.componentInfo.name = this.categoria.title
-          const newFile = base64ToFile(this.categoria.img, "editImg");
           this.categoryForm.setValue({
             id: _.lowerCase(params["id"]),
             name: this.categoria.title,
-            type:  this.categoria.tipo.split('')[0],
+            type: isValueInEnum(this.categoria.tipo.split('')[0], CategoriesTypes) ? this.categoria.tipo.split('')[0] : "",
             description: this.categoria.description,
             isActive: this.categoria.is_active,
-            img: this.categoria.img.split(',')[1]
+            img: this.categoria.img ? this.categoria.img.split(',')[1] : null
           })
-          
-          this.fileBanner = {
-            name: "editImg",
-            fileId: 0,
-            url: URL.createObjectURL(newFile),
-            file: newFile
-          };
-          this.categoryForm.get('img').patchValue(this.categoria.img.split(',')[1]);
-          this.cdRef.detectChanges();
+          console.log(this.categoria)
+          if (this.categoria.img) {
+            const newFile = base64ToFile(this.categoria.img, "editImg");
+            console.log(newFile)
+            this.fileBanner = {
+              name: "editImg",
+              fileId: 0,
+              url: URL.createObjectURL(newFile),
+              file: newFile
+            };
+            this.categoryForm.get('img').patchValue(this.categoria.img.split(',')[1]);
+            this.cdRef.detectChanges();
+          }
         }, (error) => {
           Swal.fire({
             title: 'Error',
@@ -276,6 +287,9 @@ export class ContenidoFormComponent implements OnInit {
       formData.append('tipo', this.categoryForm.get('type').value);
       formData.append('description', this.categoryForm.get('description').value);
       formData.append('img', this.fileBanner.file);
+      formData.append('has_sections', (this.categoryForm.get('type').value == "B") ? "1": "0");
+      formData.append('is_active', this.categoryForm.get('isActive').value);
+      
 
       // TODO if para distinguir entre acciones osea editar o crear
       if (this.componentInfo.action == ConstantsConten.EDIT_TITLE) {

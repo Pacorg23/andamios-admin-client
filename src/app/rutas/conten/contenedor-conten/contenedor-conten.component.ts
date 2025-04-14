@@ -7,7 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
 import { ContenService } from '../service/conten.service';
 import Swal from 'sweetalert2';
-import { Seccion } from '../models/seccion';
+import { Section } from '../models/seccion';
 import { ConstantsConten } from '../constantes-conten';
 
 export enum ListEnum {
@@ -40,8 +40,8 @@ export class ContenedorContenComponent implements OnInit {
 
   public typeList: string;
   public categorias: Category[];
-  public secciones: Seccion[];
-  public subsecciones: Seccion[];
+  public secciones: Section[];
+  public subsecciones: Section[];
   public typeTitle: string;
   public sectionSelected: ItemInfo;
   public categorySelected: ItemInfo;
@@ -57,7 +57,7 @@ export class ContenedorContenComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if(_.isEqual(this.typeList, ListEnum.Category)){
+    if (_.isEqual(this.typeList, ListEnum.Category)) {
       this.getCategorias();
     }
   }
@@ -73,7 +73,7 @@ export class ContenedorContenComponent implements OnInit {
         confirmButtonText: 'Aceptar'
       });
     }
-  );
+    );
   }
 
   /**
@@ -83,11 +83,23 @@ export class ContenedorContenComponent implements OnInit {
    * @returns void
    */
   public goTo(type: string): void {
+    if (this.typeList == "seccion") {
 
-    if (_.isNil(this.categorySelected?.id)) {
-      this.router.navigate([`conten/${_.lowerCase(type)}`]);
+      if (_.isNil(this.categorySelected?.id)) {
+        this.router.navigate([`conten/${_.lowerCase(type)}`]);
+      } else {
+        this.router.navigate([`conten/${_.lowerCase(type)}/${this.categorySelected.id}`]);
+      }
+    }
+    else if (this.typeList == "subseccion") {
+      if (_.isNil(this.sectionSelected?.id)) {
+        this.router.navigate([`conten/${_.lowerCase(type)}`]);
+      } else {
+        this.router.navigate([`conten/${_.lowerCase(type)}/${this.sectionSelected.id}`]);
+      }
     } else {
-      this.router.navigate([`conten/${_.lowerCase(type)}/${this.categorySelected.id}`]);
+      this.router.navigate([`conten/${_.lowerCase(type)}`]);
+
     }
   }
 
@@ -132,26 +144,28 @@ export class ContenedorContenComponent implements OnInit {
    * @returns void
    */
   public getSections(category?: Category): void {
+
     this.typeList = ListEnum.Section;
     this.typeTitle = _.capitalize(this.typeList);
-    this.categorySelected = {
-      title: category.title,
-      id: category.id
+    if (category) {
+
+      this.categorySelected = {
+        title: category.title,
+        id: category.id
+      }
+      this.categoryTypeSelected = category.tipo;
     }
-    // TODO recuerda que las secciones son de la categoria seleccionada y solo las de tipo B pueden tener subsecciones
-    this.categoryTypeSelected = category.tipo;
-    // TODO obtener secciones de la categoria seleccionada
-    this.contenService.getSectionsById(this.categorySelected.id).subscribe((response) => {
+    this.contenService.getSectionsByFatherId(this.categorySelected.id).subscribe((response) => {
       this.secciones = response;
     }, (error) => {
       Swal.fire({
         title: 'Error',
-        text: 'Error al obtener las categorias',
+        text: 'Error al obtener las secciones',
         icon: 'error',
         confirmButtonText: 'Aceptar'
       });
     }
-  );
+    );
   }
 
   /**
@@ -162,11 +176,25 @@ export class ContenedorContenComponent implements OnInit {
   public getSubsections(section?: any): void {
     this.typeList = ListEnum.Subsection;
     this.typeTitle = _.capitalize(this.typeList);
-    this.subsectionSelected = {
-      title: section.title,
-      id: section.id
+    if (section) {
+
+      this.sectionSelected = {
+        title: section.title,
+        id: section.id
+      }
     }
-    //TODO get subsections
+
+    this.contenService.getSubsectionsByFatherId(this.sectionSelected.id).subscribe((response) => {
+      this.subsecciones = response;
+    }, (error) => {
+      Swal.fire({
+        title: 'Error',
+        text: 'Error al obtener las subsecciones',
+        icon: 'error',
+        confirmButtonText: 'Aceptar'
+      });
+    }
+    );
   }
 
   /**
@@ -180,7 +208,7 @@ export class ContenedorContenComponent implements OnInit {
     } else if (_.isEqual(this.typeList, ListEnum.Section)) {
       this.router.navigate([`conten/${_.lowerCase(this.typeList)}/${this.categorySelected.id}/${id}`]);
     } else if (_.isEqual(this.typeList, ListEnum.Subsection)) {
-      this.router.navigate([`conten/${_.lowerCase(this.typeList)}/${this.categorySelected.id}/${id}`]);
+      this.router.navigate([`conten/${_.lowerCase(this.typeList)}/${this.sectionSelected.id}/${id}`]);
     }
   }
 
@@ -200,25 +228,74 @@ export class ContenedorContenComponent implements OnInit {
       cancelButtonText: 'Cancelar'
     }).then((result) => {
       if (result.isConfirmed) {
-        this.contenService.deleteCategories(id).subscribe((response) => {
-        }, (error) => {
-          Swal.fire({
-            title: 'Error',
-            text: 'Error al obtener las categorias',
-            icon: 'error',
-            confirmButtonText: 'Aceptar'
-          });
+        switch (type) {
+          case "categoria":
+            this.contenService.deleteCategories(id).subscribe((response) => {
+              Swal.fire({
+                title: 'Eliminado',
+                text: `Se ha eliminado la ${type} con id ${id}`,
+                icon: 'success',
+                confirmButtonText: 'Aceptar'
+              }).then(() => {
+                this.getCategorias()
+              })
+            }, (error) => {
+              Swal.fire({
+                title: 'Error',
+                text: 'Error al borrar la categoria',
+                icon: 'error',
+                confirmButtonText: 'Aceptar'
+              });
+            }
+            );
+            break;
+
+          case "seccion":
+            this.contenService.deleteSection(id).subscribe((response) => {
+              Swal.fire({
+                title: 'Eliminado',
+                text: `Se ha eliminado la ${type} con id ${id}`,
+                icon: 'success',
+                confirmButtonText: 'Aceptar'
+              }).then(() => {
+                this.getSections()
+              })
+            }, (error) => {
+              Swal.fire({
+                title: 'Error',
+                text: 'Error al borrar la seccion',
+                icon: 'error',
+                confirmButtonText: 'Aceptar'
+              });
+            }
+            );
+            break;
+          case "subseccion":
+            this.contenService.deleteSubsection(id).subscribe((response) => {
+              Swal.fire({
+                title: 'Eliminado',
+                text: `Se ha eliminado la ${type} con id ${id}`,
+                icon: 'success',
+                confirmButtonText: 'Aceptar'
+              }).then(() => {
+                this.getSubsections()
+              })
+            }, (error) => {
+              Swal.fire({
+                title: 'Error',
+                text: 'Error al borrar la subseccion',
+                icon: 'error',
+                confirmButtonText: 'Aceptar'
+              });
+            }
+            );
+            break;
+
+          default:
+            break;
         }
-      );
         //TODO delete process
-        Swal.fire({
-          title: 'Eliminado',
-          text: `Se ha eliminado la ${type} con id ${id}`,
-          icon: 'success',
-          confirmButtonText: 'Aceptar'
-        }).then(()=>{
-          this.getCategorias()
-        })
+
 
       } else {
         Swal.fire({

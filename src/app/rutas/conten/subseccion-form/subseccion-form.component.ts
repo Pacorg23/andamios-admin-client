@@ -10,7 +10,6 @@ import { ConstantsConten } from '../constantes-conten';
 import { Category } from '../models/category';
 import { Section } from '../models/seccion';
 import { Title } from '@angular/platform-browser';
-import { LoadingComponent } from '../../../effects/loading/loading.component';
 
 export class ComponentInfo {
   action: string;
@@ -28,28 +27,6 @@ export class ComponentInfo {
     this.Subseccion_Id = 0;
   }
 }
-function base64ToFile(base64String: string, fileName: string): File {
-  // Remove the data URL prefix (e.g., "data:image/png;base64,")
-  const base64DataSplitted = base64String.split(',');
-  const base64Data = base64DataSplitted.length > 1 ? base64DataSplitted[1] : base64DataSplitted[0];
-
-  // Decode the base64 string to a binary string
-  const byteCharacters = atob(base64Data);
-
-  // Convert the binary string into an array of bytes
-  const byteArrays = new Uint8Array(byteCharacters.length);
-  for (let i = 0; i < byteCharacters.length; i++) {
-    byteArrays[i] = byteCharacters.charCodeAt(i);
-  }
-
-  // Create a Blob from the byte array
-  const blob = new Blob([byteArrays], { type: 'application/octet-stream' });
-
-  // Convert the Blob into a File (you can change the type to match your file type)
-  const file = new File([blob], fileName, { type: blob.type });
-
-  return file;
-}
 
 export interface FileObject {
   name: string,
@@ -59,13 +36,13 @@ export interface FileObject {
 };
 
 @Component({
-  selector: 'app-seccion-form',
+  selector: 'app-subseccion-form',
   standalone: true,
-  imports: [ReactiveFormsModule, FormsModule, EditorModule, MatIconModule, LoadingComponent],
-  templateUrl: './seccion-form.component.html',
-  styleUrl: './seccion-form.component.css'
+  imports: [ReactiveFormsModule, FormsModule, EditorModule, MatIconModule],
+  templateUrl: './subseccion-form.component.html',
+  styleUrl: './subseccion-form.component.css'
 })
-export class SeccionFormComponent implements OnInit {
+export class SubseccionFormComponent implements OnInit {
 
   public componentInfo: ComponentInfo;
   public fileArray: FileObject[] = [];
@@ -74,8 +51,7 @@ export class SeccionFormComponent implements OnInit {
   public urlPersonalized: string;
   public sectionForm: FormGroup;
   public comesForm: Category; //Categoria a la que pertenece la seccion
-  public seccion: Section;
-  public loading:boolean = false
+  public subseccion: Section;
 
   //Configuracion del editor
   public config: EditorComponent['init'] = {
@@ -134,96 +110,57 @@ export class SeccionFormComponent implements OnInit {
 
   public initializeComponent(): void {
     this.route.params.subscribe(params => {
-      const categoriaId = params['categoriaId'];
-      const seccionId = params['seccionId'];
+      const seccionId = params['seccionId'] || "";
+      const subseccionId = params['subseccionId'] || "";
   
-      // Obtener información de la categoría por ID
-      this.obtenerInformacionCategoria(categoriaId, seccionId);
+      console.log(seccionId);
+      console.log(subseccionId);
+  
+      this.setComponentAction(subseccionId);
+      this.loadSectionInfo(seccionId, subseccionId);
     });
   }
   
-  private obtenerInformacionCategoria(categoriaId: number, seccionId?: string): void {
-    this.contenService.getCategoriesById(categoriaId).subscribe(response => {
-      this.componentInfo.name = response.title;
-      this.componentInfo.Categoria_Id = response.id;
+  private setComponentAction(subseccionId: string): void {
+    this.componentInfo.action = subseccionId 
+      ? ConstantsConten.EDIT_TITLE 
+      : ConstantsConten.CREATE_TITLE;
+  }
   
-      if (seccionId) {
-        this.procesarInformacionSeccion(seccionId);
+  private loadSectionInfo(seccionId: number, subseccionId: number): void {
+    console.log("test 0");
+  
+    this.contenService.getSectionInfo(seccionId).subscribe(response => {
+      console.log("test 1");
+      console.log(response);
+  
+      this.componentInfo.name = response.title;
+      this.componentInfo.Seccion_Id = response.id;
+  
+      if (subseccionId) {
+        this.loadSubsectionInfo(subseccionId, seccionId + "");
       } else {
-        this.componentInfo.action = ConstantsConten.CREATE_TITLE;
+        console.log("test 3");
+        // this.componentInfo.name = nombreCategoria;
       }
     });
   }
   
-  private procesarInformacionSeccion(seccionId: string): void {
-    this.loading = true;
-    this.componentInfo.action = ConstantsConten.EDIT_TITLE;
-    this.componentInfo.Seccion_Id = _.lowerCase(seccionId);
+  private loadSubsectionInfo(subseccionId: number, seccionId: string): void {
+    this.contenService.getSubsectionsById(subseccionId).subscribe(response => {
+      console.log("response");
+      console.log(response);
   
-    this.contenService.getSectionById(this.componentInfo.Seccion_Id).subscribe(response => {
-      this.seccion = response[0];
-      this.actualizarInformacionSeccion();
-      this.loading = false;
-    });
-  }
+      this.subseccion = response;
+      this.componentInfo.name = this.subseccion.title;
   
-  private actualizarInformacionSeccion(): void {
-    this.componentInfo.name = this.seccion?.title || "";
-    this.sectionForm.setValue({
-      title: this.seccion.title,
-      description: this.seccion.description,
-      idSeccion: this.seccion.id,
-      idSubseccion: 0,
-      file: "",
-      img: this.seccion.img || null
-    });
-  
-    this.procesarImagenPrincipal();
-    this.procesarImagenesSecundarias();
-    this.procesarArchivo();
-  }
-  
-  private procesarImagenPrincipal(): void {
-    if (this.seccion?.img) {
-      const newFile = base64ToFile(this.seccion.img, "editImg");
-      this.presntationFile = {
-        name: "editImg",
-        fileId: 0,
-        url: URL.createObjectURL(newFile),
-        file: newFile
-      };
-      this.sectionForm.get('img').patchValue(this.seccion.img.split(',')[1]);
-      this.cdRef.detectChanges();
-    }
-  }
-  
-  private procesarImagenesSecundarias(): void {
-    if (this.seccion?.imgs.length > 0) {
-      this.seccion.imgs.forEach(img => {
-        const file = base64ToFile(img.data, img.title);
-        this.fileArray.push({
-          name: img.title,
-          fileId: img.id,
-          url: URL.createObjectURL(file),
-          file: file
-        });
-        this.cdRef.detectChanges();
+      this.sectionForm.setValue({
+        title: this.subseccion.title,
+        description: this.subseccion.description,
+        idSeccion: seccionId,
+        idSubseccion: subseccionId
       });
-    }
-  }
-  
-  private procesarArchivo(): void {
-    if (this.seccion?.file) {
-      const newFile = base64ToFile(this.seccion.file, "file");
-  
-      this.sectionFile = {
-        name: newFile.name,
-        fileId: 0,
-        url: URL.createObjectURL(newFile),
-        file: newFile
-      };
-      this.sectionForm.get('file')?.patchValue(this.sectionFile.url);
-    }
+    });
   }
 
   /**
@@ -236,8 +173,8 @@ export class SeccionFormComponent implements OnInit {
       title: ['', Validators.required],
       // url: ['', Validators.required],
       description: ['', Validators.required],
-      img: [''],
-      file: [''],
+      // img: [''],
+      // file: [''],
       idSeccion: [''],
       idSubseccion: ['']
     });
@@ -300,7 +237,7 @@ export class SeccionFormComponent implements OnInit {
       this.sectionFile.fileId = 0;
       this.sectionFile.url = URL.createObjectURL(file);
       this.sectionFile.file = file;
-      // this.sectionForm.get('file')?.patchValue(this.sectionFile.url);
+      this.sectionForm.get('file')?.patchValue(this.sectionFile.url);
     }
   }
 
@@ -308,8 +245,7 @@ export class SeccionFormComponent implements OnInit {
    * @description Elimina el archivo de la seccion
    * @param {void}
    */
-  public removeFile(event: any): void {
-    debugger
+  public removeFile(): void {
     this.sectionFile = {
       name: '',
       fileId: 0,
@@ -317,7 +253,6 @@ export class SeccionFormComponent implements OnInit {
       file: new File([], '')
     };
     this.sectionForm.get('file')?.patchValue('');
-    return
   }
 
   /**
@@ -381,35 +316,7 @@ export class SeccionFormComponent implements OnInit {
    * @returns void
    */
   public removeImageFromFileArray(fileId: number): void {
-    if (this.componentInfo.action == ConstantsConten.EDIT_TITLE) {
-      Swal.fire({
-        title: '¿Estás seguro?',
-        text: "Esta acción eliminará la imagen de forma permanente.",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Sí, eliminar',
-        cancelButtonText: 'Cancelar'
-      }).then((result) => {
-        this.contenService.deleteImage(fileId).subscribe((result) => {
-          Swal.fire({
-            toast: true,
-            position: 'top-end',
-            icon: 'success',
-            title: 'Imagen eliminada exitosamente',
-            showConfirmButton: false,
-            timer: 1000, // El toast desaparecerá después de 1 segundo
-            timerProgressBar: true // Muestra una barra de progreso
-          });
-        })
-        this.fileArray = this.fileArray.filter((file) => file.fileId !== fileId);
-      })
-    }
-    else {
-      this.fileArray = this.fileArray.filter((file) => file.fileId !== fileId);
-
-    }
+    this.fileArray = this.fileArray.filter((file) => file.fileId !== fileId);
   }
 
   /**
@@ -444,24 +351,20 @@ export class SeccionFormComponent implements OnInit {
    * @returns {void}
    */
   public submitStage(): void {
-    this.loading= true;
     const formData = this.createFormData();
-    
+  
     if (this.isEditMode()) {
-      this.updateSection(formData);
+      this.updateSubsection(formData);
     } else {
-      this.initializeSection(formData);
+      this.initializeSubsection(formData);
     }
   }
   
   private createFormData(): FormData {
     const formData = new FormData();
     formData.append('title', this.sectionForm.get('title')?.value);
-    formData.append('url', this.formattedText);
     formData.append('description', this.sectionForm.get('description')?.value);
-    formData.append('Categorias_Id', String(this.componentInfo.Categoria_Id));
-    formData.append('banner', this.presntationFile.file);
-    formData.append('archivo', this.sectionFile.file);
+    formData.append('Secciones_Conten_Id', String(this.componentInfo.Seccion_Id));
     return formData;
   }
   
@@ -469,10 +372,10 @@ export class SeccionFormComponent implements OnInit {
     return this.componentInfo.action === ConstantsConten.EDIT_TITLE;
   }
   
-  private updateSection(formData: FormData): void {
-    formData.append('id', this.sectionForm.get('idSeccion').value);
+  private updateSubsection(formData: FormData): void {
+    formData.append('id', this.sectionForm.get('idSubseccion')?.value);
   
-    this.contenService.setSection(formData).subscribe(
+    this.contenService.setSubsection(formData).subscribe(
       (categoriaCreada) => {
         this.handleSuccess('Categoría inicializada correctamente', categoriaCreada.title);
         this.router.navigate(['conten/editor']);
@@ -481,11 +384,10 @@ export class SeccionFormComponent implements OnInit {
     );
   }
   
-  private initializeSection(formData: FormData): void {
-    this.contenService.initSection(formData).subscribe(
-      (seccionCreada) => {
-        this.handleSuccess(`Categoría inicializada correctamente con id: ${seccionCreada.id}`);
-        this.handleAdditionalUploads(seccionCreada.id);
+  private initializeSubsection(formData: FormData): void {
+    this.contenService.initSubsection(formData).subscribe(
+      (categoriaCreada) => {
+        this.handleSuccess('Categoría inicializada correctamente', categoriaCreada.title);
         this.router.navigate(['conten/editor']);
       },
       () => this.handleError('Error al iniciar la categoría')
@@ -495,7 +397,6 @@ export class SeccionFormComponent implements OnInit {
   private handleSuccess(message: string, title?: string): void {
     Swal.fire({ icon: 'success', title: 'Correcto', text: message }).then(() => {
       if (title) {
-        this.loading = false;
         this.componentInfo.name = title;
       }
     });
@@ -505,29 +406,6 @@ export class SeccionFormComponent implements OnInit {
     const text = errorMessage ? `${message} ${errorMessage}` : message;
     Swal.fire({ icon: 'error', title: 'Error', text });
   }
-  
-  private handleAdditionalUploads(sectionId: number): void {
-    // this.uploadFile(this.presntationFile, sectionId + "", this.contenService.initImage.bind(this.contenService));
-    this.uploadFile(this.sectionFile, sectionId + "", this.contenService.initFile.bind(this.contenService));
-    this.uploadMultipleFiles(this.fileArray, sectionId + "");
-  }
-  
-  private uploadFile(file: any, sectionId: string, uploadFn: Function): void {
-    if (file) {
-      const formData = new FormData();
-      formData.append('title', file.name);
-      formData.append('Secciones_Conten_Id', sectionId);
-      formData.append('data', file.file);
-      uploadFn(formData).subscribe();
-    }
-  }
-  
-  private uploadMultipleFiles(files: any[], sectionId: string): void {
-    if (files.length > 0) {
-      files.forEach((file) => this.uploadFile(file, sectionId, this.contenService.initImage.bind(this.contenService)));
-    }
-  }
-  
 
   /**
    * @description Navigate into conten
