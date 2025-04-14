@@ -112,10 +112,7 @@ export class SubseccionFormComponent implements OnInit {
     this.route.params.subscribe(params => {
       const seccionId = params['seccionId'] || "";
       const subseccionId = params['subseccionId'] || "";
-  
-      console.log(seccionId);
-      console.log(subseccionId);
-  
+       
       this.setComponentAction(subseccionId);
       this.loadSectionInfo(seccionId, subseccionId);
     });
@@ -128,11 +125,8 @@ export class SubseccionFormComponent implements OnInit {
   }
   
   private loadSectionInfo(seccionId: number, subseccionId: number): void {
-    console.log("test 0");
   
     this.contenService.getSectionInfo(seccionId).subscribe(response => {
-      console.log("test 1");
-      console.log(response);
   
       this.componentInfo.name = response.title;
       this.componentInfo.Seccion_Id = response.id;
@@ -140,7 +134,6 @@ export class SubseccionFormComponent implements OnInit {
       if (subseccionId) {
         this.loadSubsectionInfo(subseccionId, seccionId + "");
       } else {
-        console.log("test 3");
         // this.componentInfo.name = nombreCategoria;
       }
     });
@@ -148,8 +141,6 @@ export class SubseccionFormComponent implements OnInit {
   
   private loadSubsectionInfo(subseccionId: number, seccionId: string): void {
     this.contenService.getSubsectionsById(subseccionId).subscribe(response => {
-      console.log("response");
-      console.log(response);
   
       this.subseccion = response;
       this.componentInfo.name = this.subseccion.title;

@@ -169,10 +169,8 @@ export class ContenidoFormComponent implements OnInit {
             isActive: this.categoria.is_active,
             img: this.categoria.img ? this.categoria.img.split(',')[1] : null
           })
-          console.log(this.categoria)
           if (this.categoria.img) {
             const newFile = base64ToFile(this.categoria.img, "editImg");
-            console.log(newFile)
             this.fileBanner = {
               name: "editImg",
               fileId: 0,
@@ -279,8 +277,6 @@ export class ContenidoFormComponent implements OnInit {
    */
   public nextStage(): void {
     if (this.categoryForm.valid) {
-
-      console.log('Formulario valido', this.categoryForm.value);
       const formData = new FormData();
       formData.append('title', this.categoryForm.get('name').value);
       formData.append('url', this.formattedText);
@@ -295,7 +291,6 @@ export class ContenidoFormComponent implements OnInit {
       if (this.componentInfo.action == ConstantsConten.EDIT_TITLE) {
         formData.append('id', this.categoryForm.get('id').value);
         this.contenService.setCategory(formData).subscribe((categoriaCreada) => {
-          console.log(this.fileBanner.file)
           Swal.fire({
             icon: 'success',
             title: 'Correcto',
