@@ -10,6 +10,7 @@ import { ConstantsConten } from '../constantes-conten';
 import { Category } from '../models/category';
 import { Section } from '../models/seccion';
 import { Title } from '@angular/platform-browser';
+import { LoadingComponent } from '../../../effects/loading/loading.component';
 
 export class ComponentInfo {
   action: string;
@@ -59,7 +60,7 @@ export interface FileObject {
 @Component({
   selector: 'app-subseccion-form',
   standalone: true,
-  imports: [ReactiveFormsModule, FormsModule, EditorModule, MatIconModule],
+  imports: [ReactiveFormsModule, FormsModule, EditorModule, MatIconModule,LoadingComponent ],
   templateUrl: './subseccion-form.component.html',
   styleUrl: './subseccion-form.component.css'
 })
@@ -73,6 +74,7 @@ export class SubseccionFormComponent implements OnInit {
   public sectionForm: FormGroup;
   public comesForm: Category; //Categoria a la que pertenece la seccion
   public subseccion: Section;
+  public loading:boolean = false
 
   //Configuracion del editor
   public config: EditorComponent['init'] = {
@@ -130,6 +132,7 @@ export class SubseccionFormComponent implements OnInit {
   }
 
   public initializeComponent(): void {
+    this.loading = true
     this.route.params.subscribe(params => {
       const seccionId = params['seccionId'] || "";
       const subseccionId = params['subseccionId'] || "";
@@ -137,6 +140,7 @@ export class SubseccionFormComponent implements OnInit {
       this.setComponentAction(subseccionId);
       this.loadSectionInfo(seccionId, subseccionId);
     });
+    this.loading = false
   }
   
   private setComponentAction(subseccionId: string): void {
@@ -412,6 +416,7 @@ export class SubseccionFormComponent implements OnInit {
    * @returns {void}
    */
   public submitStage(): void {
+    this.loading = true
     const formData = this.createFormData();
   
     if (this.isEditMode()) {
@@ -419,6 +424,7 @@ export class SubseccionFormComponent implements OnInit {
     } else {
       this.initializeSubsection(formData);
     }
+    this.loading = false
   }
   
   private createFormData(): FormData {
@@ -427,8 +433,8 @@ export class SubseccionFormComponent implements OnInit {
     formData.append('url', this.formattedText);
     formData.append('description', this.sectionForm.get('description')?.value);
     formData.append('Secciones_Conten_Id', String(this.componentInfo.Seccion_Id));
-    formData.append('banner', this.presntationFile.file);
-    formData.append('archivo', this.sectionFile.file);
+    formData.append('img', this.presntationFile.file);
+    formData.append('file', this.sectionFile.file);
     return formData;
   }
   
@@ -441,6 +447,7 @@ export class SubseccionFormComponent implements OnInit {
     })
   }
   private updateSubsection(formData: FormData): void {
+    this.loading = true
     formData.append('id', this.sectionForm.get('idSubseccion')?.value);
   
     this.contenService.setSubsection(formData).subscribe(
@@ -452,6 +459,7 @@ export class SubseccionFormComponent implements OnInit {
       },
       (error) => this.handleError('Error al iniciar la Subsección', error.message)
     );
+    this.loading = false
   }
   private handleAdditionalUploads(sectionId: number): void {
     // this.uploadFile(this.presntationFile, sectionId + "", this.contenService.initImage.bind(this.contenService));
