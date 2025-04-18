@@ -28,7 +28,6 @@ export class ContenService {
    * @returns {Observable<Category>} - Categoría creada
    */
   public initCategory(categoria: FormData): Observable<Category> {
-    console.log(categoria)
     return this.http.post<Category>(`${this.URL}/initCategory`, categoria); //initCategory
   }
   /**
@@ -183,6 +182,39 @@ export class ContenService {
   public deleteImage(id: number): Observable<number> {
     return this.http.delete<number>(`${this.URL}/deleteImage/${id}`); //initCategory
   }
+  /**
+     * @description Borra una imagen
+     * @param {FormData} categoria - Imagen a borrar
+     * @returns {Observable<ImagesInput>} - Imagen creada
+     */
+  public getImagesByCategoryId(id: number): Observable<FileInput[]> {
+    return this.http.get<FileInput[]>(`${this.URL}/getImagesByCategoryId/${id}`); //initCategory
+  }
+  /**
+     * @description Borra una imagen
+     * @param {FormData} categoria - Imagen a borrar
+     * @returns {Observable<ImagesInput>} - Imagen creada
+     */
+  public restartImagesCategory(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.URL}/restartImagesCategory/${id}`); //initCategory
+  }
+  /**
+     * @description Borra una imagen
+     * @param {FormData} categoria - Imagen a borrar
+     * @returns {Observable<ImagesInput>} - Imagen creada
+     */
+  public restartImagesSection(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.URL}/restartImagesSection/${id}`); //initCategory
+  }
+  /**
+     * @description Borra una imagen
+     * @param {FormData} categoria - Imagen a borrar
+     * @returns {Observable<ImagesInput>} - Imagen creada
+     */
+  public restartImagesSubsection(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.URL}/restartImagesSubsection/${id}`); //initCategory
+  }
+  
   //Files
   /**
      * @description Inicia una imagen
@@ -192,6 +224,7 @@ export class ContenService {
   public initFile(seccion: FormData): Observable<FileInput> {
     return this.http.post<FileInput>(`${this.URL}/initFile`, seccion); //initCategory
   }
+  
   
 
 }

@@ -137,7 +137,7 @@ export class SeccionFormComponent implements OnInit {
       const categoriaId = params['categoriaId'];
       const seccionId = params['seccionId'];
   
-      // Obtener información de la categoría por ID
+      // Obtener información de la Sección por ID
       this.obtenerInformacionCategoria(categoriaId, seccionId);
     });
   }
@@ -468,27 +468,33 @@ export class SeccionFormComponent implements OnInit {
   private isEditMode(): boolean {
     return this.componentInfo.action === ConstantsConten.EDIT_TITLE;
   }
-  
+  private restartImages(seccionid){
+    this.contenService.restartImagesSection(seccionid).subscribe(()=>{
+      console.log("Imagenes reiniciadas correctamente")
+    })
+  }
   private updateSection(formData: FormData): void {
     formData.append('id', this.sectionForm.get('idSeccion').value);
   
     this.contenService.setSection(formData).subscribe(
       (categoriaCreada) => {
-        this.handleSuccess('Categoría inicializada correctamente', categoriaCreada.title);
+        this.handleSuccess('Sección inicializada correctamente', categoriaCreada.title);
+        this.restartImages(this.sectionForm.get('idSeccion').value);
+        this.handleAdditionalUploads(this.sectionForm.get('idSeccion').value);
         this.router.navigate(['conten/editor']);
       },
-      (error) => this.handleError('Error al iniciar la categoría', error.message)
+      (error) => this.handleError('Error al iniciar la Sección', error.message)
     );
   }
   
   private initializeSection(formData: FormData): void {
     this.contenService.initSection(formData).subscribe(
       (seccionCreada) => {
-        this.handleSuccess(`Categoría inicializada correctamente con id: ${seccionCreada.id}`);
+        this.handleSuccess(`Seccion inicializada correctamente con id: ${seccionCreada.id}`);
         this.handleAdditionalUploads(seccionCreada.id);
         this.router.navigate(['conten/editor']);
       },
-      () => this.handleError('Error al iniciar la categoría')
+      () => this.handleError('Error al iniciar la seccion')
     );
   }
   

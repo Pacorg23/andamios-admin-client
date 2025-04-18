@@ -11,11 +11,11 @@
         [(ngModel)]="urlPersonalized">
       <label for="floatingInput">Nombre de la seccion</label>
     </div>
-    <!-- URL
+    <!-- URL -->
     <div class="form-floating mb-3">
       <input type="text" class="form-control" placeholder="URL" [disabled]="true" [value]="formattedText">
       <label for="floatingInput">URL</label>
-    </div> -->
+    </div>
     <!--DESCRIPCION-->
     <div class="mb-3">
       <label for="">Descripcion</label>
@@ -25,7 +25,7 @@
       </div>
     </div>
 
-    <!-- IMAGEN
+    <!-- IMAGEN -->
     <div class="mb-3">
       <h5>Agregar imagen de banner</h5>
       @if(presntationFile.url) {
@@ -46,10 +46,10 @@
         </div>
       </div>
       }
-    </div> -->
+    </div> 
 
     <!--ARCHIVO-->
-    <!-- <div class="mb-3">
+    <div class="mb-3">
       <h5>Agregar archivos</h5>
       @if(sectionFile?.name) {
       <div class="file-info">
@@ -67,9 +67,9 @@
         </div>
       </div>
       }
-    </div> -->
+    </div>
     <!--ARRAY DE IMAGENES-->
-    <!-- <div class="mb-3">
+    <div class="mb-3">
       <h5>Agregar imagenes</h5>
       <div class="image-grid">
         @for (file of fileArray; track file.fileId) {
@@ -97,7 +97,7 @@
             (change)="addImageToFileArray($event, fileArray.length + 1)">
         </div>
       </div>
-    </div> -->
+    </div>
     <!-- ID SECCION -->
     <div class="form-floating mb-3">
       <input type="text" class="form-control" placeholder="titulo" formControlName="idSeccion" [hidden]="true">
