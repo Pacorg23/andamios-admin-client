@@ -33,10 +33,11 @@ export class NavbarComponent {
         confirmButtonText: "Salir"
       }).then(() => {
         this.jwtService.deleteToken()
-
+        setTimeout(() => {
+          this.router.navigate(['/login'])
+        }, 200)
       })
-    })
-    this.router.navigate(['/'])
+    });
   }
 
   mostrarMenu() {

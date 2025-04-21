@@ -21,21 +21,22 @@ export class ContactoComponent {
   loading:boolean = false
 
   constructor(private accionesService: ApiService, private activatedroute: ActivatedRoute) {
-    this.loading = true
-    afterRender(()=>{
-      this.activatedroute.params.subscribe(params => {
-        this.area = params['area'];
-        this.obtenerSolicitudes()
-      })
+    this.loading = true;
+    this.activatedroute.params.subscribe(params => {
+      this.area = params['area'];
+      this.obtenerSolicitudes()
     })
-   }
+  }
 
   ngOnInit() {
 
   }
 
-  obtenerSolicitudes() {
-
+  /**
+   * @description Obtiene las solicitudes de contacto desde el servicio y las formatea
+   * @returns {void}
+   */
+  private obtenerSolicitudes(): void {
     this.accionesService.obtenerSolicitudesContacto(this.area).subscribe(data => {
       data.forEach(solicitud => {
         const dateInMilliseconds = Date.parse(solicitud.createdAt);
@@ -51,6 +52,16 @@ export class ContactoComponent {
       this.solicitudes = data;
       this.loading = false
     },error => {
+      this.loading = false
+      Swal.fire({
+        title: "Error",
+        confirmButtonColor: "#B30000",
+        timer: 2000,
+        text: error.error.mensaje,
+        icon: "error"
+      }).then(() => {
+        this.loading = false
+      });
       console.log(error)
     });
   }

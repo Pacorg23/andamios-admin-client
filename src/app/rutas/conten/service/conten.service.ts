@@ -4,6 +4,8 @@ import { Observable } from 'rxjs';
 
 import { Category } from '../models/category';
 import { Seccion } from '../models/seccion';
+import { Sucursal } from '../../../models/general/sucursal';
+import { Carrusel } from '../../../models/andamios/carrusel';
 
 @Injectable({
   providedIn: 'root',
@@ -91,4 +93,77 @@ export class ContenService {
     console.log(seccion)
     return this.http.post<Seccion>(`${this.URL}/initSection`, seccion); //initCategory
   }
+
+  /**
+   * @description obtene una sucursales
+   * @param {void}
+   * @returns {Observable<Sucursal[]>}
+   */
+  public obtenerSucursales(): Observable<Sucursal[]> {
+    return this.http.get<Sucursal[]>(`${this.URL}/obtenerSucursales`);
+  }
+
+  /**
+   * @description Agregar una sucursal
+   * @param {FormData} sucursal - Sucursal a agregar
+   * @returns {Observable<Sucursal>} - Sucursal creada
+   */
+  public agregarSucursal(sucursal: FormData): Observable<Sucursal> {
+    return this.http.post<Sucursal>(`${this.URL}/sucursales`, sucursal);
+  }
+
+  /**
+   * @description Eliminar una sucursal
+   * @param {number} id - ID de la sucursal a eliminar
+   * @returns {Observable<void>} - Void
+   */
+  public eliminarSucursal(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.URL}/eliminarSucursales/${id}`);
+  }
+
+  /**
+   * @description Editar una sucursal
+   * @param {FormData} sucursal - Sucursal a editar
+   * @returns {Observable<Sucursal>} - Sucursal editada
+   */
+  public editarSucursal(sucursal: FormData): Observable<Sucursal> {
+    return this.http.put<Sucursal>(`${this.URL}/modificarSucursales`, sucursal);
+  }
+
+  /**
+   * @description Agregar carrusel
+   * @param {FormData} carrusel - Carrusel a agregar
+   * @returns {Observable<Carrusel>} - Carrusel creado
+   */
+  public agregarCarrusel(carrusel: FormData): Observable<Carrusel> {
+    return this.http.post<Carrusel>(`${this.URL}/carrusel`, carrusel);
+  }
+
+  /**
+   * @description Obtener carrusel
+   * @param {void}
+   * @returns {Observable<Carrusel[]>} - Carrusel
+   */
+  public obtenerCarrusel(): Observable<Carrusel[]> {
+    return this.http.get<Carrusel[]>(`${this.URL}/obtenerCarrusel`);
+  }
+
+  /**
+   * @description Borrar carrusel
+   * @param {number} id - ID del carrusel a borrar
+   * @returns {Observable<void>} - Void
+   */
+  public borrarCarrusel(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.URL}/borrarCarrusel/${id}`);
+  }
+
+  /**
+   * @description Editar carrusel
+   * @param {FormData} carrusel - Carrusel a editar
+   * @returns {Observable<Carrusel>} - Carrusel editado
+   */
+  public editarCarrusel(carrusel: FormData): Observable<Carrusel> {
+    return this.http.put<Carrusel>(`${this.URL}/modificarCarrusel`, carrusel);
+  }
+
 }
