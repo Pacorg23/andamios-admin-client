@@ -7,11 +7,12 @@ import { SucursalesAndamiosComponent } from "../Generales/sucursales/sucursales-
 import { ContenidoFormComponent } from "./contenido-form/contenido-form.component";
 import { ContenedorContenComponent } from "./contenedor-conten/contenedor-conten.component";
 import { SeccionFormComponent } from "./seccion-form/seccion-form.component";
+import { SubseccionFormComponent } from "./subseccion-form/subseccion-form.component";
 
 export const routes: Routes = [
-  { path: "", redirectTo: "home", pathMatch: "full"},
-  { path: "home", component: HomeContenComponent},
-  { path: "secciones/:area", component:SeccionesComponent},
+  { path: "", redirectTo: "home", pathMatch: "full" },
+  { path: "home", component: HomeContenComponent },
+  { path: "secciones/:area", component: SeccionesComponent },
   { path: "solicitudes/:division", component: SolicitudesComponent },
   { path: "contacto/:area", component: ContactoComponent },
   { path: "sucursales/:division", component: SucursalesAndamiosComponent },
@@ -19,5 +20,7 @@ export const routes: Routes = [
   { path: "categoria", component: ContenidoFormComponent },
   { path: "categoria/:id", component: ContenidoFormComponent },
   { path: "seccion/:categoriaId", component: SeccionFormComponent },
-  { path: "seccion/:categoriaId/:seccionName", component: SeccionFormComponent },
+  { path: "seccion/:categoriaId/:seccionId", component: SeccionFormComponent },
+  { path: "subseccion/:seccionId", component: SubseccionFormComponent },
+  { path: "subseccion/:seccionId/:subseccionId", component: SubseccionFormComponent },
 ]
