@@ -29,11 +29,11 @@
 
     <div class="bit-sectio mb-3">
       <div class="form-check form-check-inline">
-        <input class="form-check-input" type="radio" name="type" id="inlineRadio1" value="A" formControlName="type">
+        <input class="form-check-input" type="radio" name="type" id="inlineRadio1" value="A" formControlName="type" >
         <label class="form-check-label" for="inlineRadio1">Tipo Ingenieria</label>
       </div>
       <div class="form-check form-check-inline">
-        <input class="form-check-input" type="radio" name="type" id="inlineRadio2" value="B" formControlName="type">
+        <input class="form-check-input" type="radio" name="type" id="inlineRadio2" value="B" formControlName="type" >
         <label class="form-check-label" for="inlineRadio2">Tipo Manufactura</label>
       </div>
       <div class="form-check form-check-inline">
@@ -41,44 +41,48 @@
         <label class="form-check-label" for="inlineRadio3">Tipo Productos</label>
       </div>
       <div class="form-check form-check-inline">
-        <input class="form-check-input" type="radio" name="type" id="inlineRadio4" value="D" formControlName="type">
+        <input class="form-check-input" type="radio" name="type" id="inlineRadio4" value="D" formControlName="type" >
         <label class="form-check-label" for="inlineRadio4">Tipo Certificaciones</label>
       </div>
     </div>
 
-    <div class="mb-3">
-      <label for="">Descripcion</label>
+
       <div class="mb-3">
-        <editor apiKey="pdmcwg4496yv6p8pfgeue5qew4yqbpgszy9ycv6tgf1pwdxd" [init]="config" formControlName="description">
-        </editor>
-      </div>
-    </div>
-
-    <div class="mb-3">
-      @if(fileBanner.url) {
-      <div class="banner">
-        <img src="{{fileBanner.url}}" alt="" class="banner">
-        <div class="edit_btn">
-          <i class="material-icons" (click)="removeImage()">delete</i>
-          <i class="material-icons" (click)="editImage()">edit</i>
+        <label for="">Descripcion</label>
+        <div class="mb-3">
+          <editor apiKey="pdmcwg4496yv6p8pfgeue5qew4yqbpgszy9ycv6tgf1pwdxd" [init]="config" formControlName="description">
+          </editor>
         </div>
       </div>
-      } @else {
 
-      <div class="item">
-        <div class="file-input-container">
-          <button type="button" class="btn btn-warning banner-btn" (click)="generateClickToFile()">
-            <i class="material-icons">attachment</i> Agregar banner
-          </button>
-          <input title="image" type="file" accept="image/*" class="file-input" id="file-input"
-            (change)="saveImage($event)">
-        </div>
+      <div class="mb-3">
+        @if(fileBanner.url) {
+          <div class="banner">
+            <img src="{{fileBanner.url}}" alt="" class="banner">
+            <div class="edit_btn">
+              <i class="material-icons" (click)="removeImage()">delete</i>
+              <i class="material-icons" (click)="editImage()">edit</i>
+            </div>
+          </div>
+        } @else {
+          
+          <div class="item">
+            <div class="file-input-container">
+              <button type="button" class="btn btn-warning banner-btn" (click)="generateClickToFile()">
+                <i class="material-icons">attachment</i> Agregar banner
+              </button>
+              <input title="image" type="file" accept="image/*" class="file-input" id="file-input"
+              (change)="saveImage($event)">
+            </div>
+          </div>
+        }
       </div>
-      }
-    </div>
 
     <button type="button" class="btn btn-danger confirm-button mx-1" (click)="goTo('editor')">Cancelar</button>
     <button type="submit" class="btn btn-success confirm-button mx-1">{{componentInfo?.action}}</button>
   </form>
 
 </div>
+@if(loading){
+  <app-loading></app-loading>
+}

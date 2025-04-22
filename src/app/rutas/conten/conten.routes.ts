@@ -6,13 +6,11 @@ import { ContactoComponent } from "../Generales/contacto/contacto.component";
 import { ContenidoFormComponent } from "./contenido-form/contenido-form.component";
 import { ContenedorContenComponent } from "./contenedor-conten/contenedor-conten.component";
 import { SeccionFormComponent } from "./seccion-form/seccion-form.component";
-import { SucursalComponent } from "./sucursal/sucursal.component";
-import { CarruselContenComponent } from "./carrusel-conten/carrusel-conten.component";
 
 export const routes: Routes = [
-  { path: "", redirectTo: "home", pathMatch: "full"},
-  { path: "home", component: HomeContenComponent},
-  { path: "secciones/:area", component:SeccionesComponent},
+  { path: "", redirectTo: "home", pathMatch: "full" },
+  { path: "home", component: HomeContenComponent },
+  { path: "secciones/:area", component: SeccionesComponent },
   { path: "solicitudes/:division", component: SolicitudesComponent },
   { path: "contacto/:area", component: ContactoComponent },
   { path: "sucursales", component: SucursalComponent },
@@ -20,6 +18,8 @@ export const routes: Routes = [
   { path: "categoria", component: ContenidoFormComponent },
   { path: "categoria/:id", component: ContenidoFormComponent },
   { path: "seccion/:categoriaId", component: SeccionFormComponent },
-  { path: "seccion/:categoriaId/:seccionName", component: SeccionFormComponent },
+  { path: "seccion/:categoriaId/:seccionId", component: SeccionFormComponent },
   { path: "carrusel", component: CarruselContenComponent },
+  { path: "subseccion/:seccionId", component: SubseccionFormComponent },
+  { path: "subseccion/:seccionId/:subseccionId", component: SubseccionFormComponent },
 ]

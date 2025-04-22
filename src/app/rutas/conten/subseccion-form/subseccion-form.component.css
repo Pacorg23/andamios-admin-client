@@ -1,23 +1,37 @@
-.file-input {
-  display: none;
+.form-control:focus,
+.form-check-input:focus {
+  border-color: var(--color-secundario);
+  box-shadow: 0 0 0 0.25rem rgba(10, 76, 183, 0.25);
 }
 
-.item {
-  position: relative;
-  width: 100px;
-  height: 100px;
+.form-check-input:checked {
+  background-color: var(--color-secundario);
+  border-color: var(--color-secundario);
+}
+
+.initial-form {
+  width: 100%;
+  padding: 10px 40px;
+}
+
+.btn-width {
+  width: 30%;
+  display: flex;
+  align-items: center;
+}
+
+.btn-warning>i {
+  margin-right: 20px;
+}
+
+.file-input {
+  display: none;
 }
 
 .banner {
   position: relative;
   width: 600px;
   height: auto;
-}
-
-.item img {
-  width: 100px;
-  height: 100px;
-  object-fit: cover;
 }
 
 .edit_btn {
@@ -34,57 +48,31 @@
   gap: 5px;
 }
 
-.edit_btn i {
-  font-size: 24px;
-  cursor: pointer;
-}
-
 .banner:hover .edit_btn {
   opacity: 1;
   width: 100%;
   height: 100%;
   background-color: rgba(57, 57, 57, 0.478);
+  cursor: pointer;
 }
 
-.edit_btn i:hover {
-  color: var(--color-secundario);
+.file-info {
+  display: flex;
+  flex-direction: row;
 }
 
-.form-control:focus , .form-check-input:focus{
-  border-color: var(--color-secundario);
-  box-shadow: 0 0 0 0.25rem rgba(10, 76, 183, 0.25);
-}
-
-.form-check-input:checked{
-  background-color: var(--color-secundario);
-  border-color: var(--color-secundario);
-}
-
-.initial-form {
-  width: 100%;
-  padding: 10px 40px;
-}
-
-.confirm-button {
-  width: 10%;
-}
-
-.banner {
-  width: 600px;
-  height: 300px;
-}
-
-.banner-btn {
-  width: 150px;
+.delete-file-btn {
   display: flex;
   align-items: center;
   justify-content: center;
 }
+
 .image-grid {
   display: grid;
   grid-template-columns: repeat(6, 100px);
   gap: 10px;
 }
+
 .item-array {
   position: relative;
   width: 100px;
@@ -102,6 +90,8 @@
 .item-array:hover img {
   transform: scale(1.05);
 }
+
+/* Botón de eliminar oculto por defecto */
 .edit_btn_array {
   position: absolute;
   top: 4px;
@@ -120,4 +110,8 @@
 
 .item-array:hover .edit_btn_array {
   display: block;
+}
+
+.confirm-button {
+  width: 10%;
 }
