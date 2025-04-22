@@ -1,0 +1,134 @@
+.contenedor{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding-bottom: 30px;
+  position: relative;
+}
+
+h1{
+  text-align: center;
+  margin: 12px auto 20px auto;
+  border-bottom: 2px solid var(--color-secundario);
+  width: 20%;
+}
+
+
+.exit-btn{
+  position: absolute;
+  top: 40px;
+  left: 5%;
+  cursor: pointer;
+  border: 1px solid var(--color-secundario);
+  border-radius: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 25px;
+  font-size: 35px;
+  color: var(--color-secundario);
+}
+
+.exit-btn:hover{
+  background-color: var(--color-secundario);
+  color: white;
+}
+
+.tabla{
+  width: 80%;
+  padding-top: 100px;
+}
+
+/* TABLE CSS */
+.header{
+  font-weight: bold;
+  border: 1px solid black;
+}
+
+.element{
+  font-weight: 300;
+  border: 1px solid black;
+  padding: 5px;
+  text-align: center;
+}
+
+#maps{
+  color: black;
+}
+
+.opc{
+  border: 1px solid var(--color-secundario);
+  background-color: white;
+  color: var(--color-secundario);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 10px 0;
+  padding: 10px;
+}
+
+.opc:hover{
+  background-color: var(--color-secundario);
+  color: white;
+}
+
+.btn{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100px;
+  margin-top: 40px;
+}
+
+.form-section {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.close-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  cursor: pointer;
+  font-size: 40px;
+  width: 40px;
+  height: 40px;
+  color: white;
+}
+
+.form {
+  width: 60%;
+}
+
+.attachment {
+  display: none;
+}
+
+.selected {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  flex-direction: row;
+}
+
+.selected button {
+  margin: 0;
+}
+
+.demo-img {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+}

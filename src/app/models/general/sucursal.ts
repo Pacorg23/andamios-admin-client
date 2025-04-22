@@ -5,4 +5,6 @@ export class Sucursal{
   telefono: string;
   maps: string;
   division: string;
+  descripcion?: string;
+  imagen?: string;
 }

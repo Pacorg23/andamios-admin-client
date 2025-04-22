@@ -67,6 +67,15 @@ export class AdminService {
       .pipe(catchError(this.handleMiddlewareError));
   }
 
+  /**
+   * @description  This method is used to end the session of a user.
+   * @param userId The id of the user whose session is to be ended.
+   * @returns An observable of any type.
+   */
+  public endUsersSession(userId: number): Observable<any> {
+    return this.http.post(`${this.URL}endSessions/${userId}`, {}, this.httpOptions);
+  }
+
   private handleMiddlewareError(error: HttpErrorResponse): Observable<never> {
     const data = error.error;
     return throwError(() => new Error(data));

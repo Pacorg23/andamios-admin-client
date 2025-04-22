@@ -22,20 +22,23 @@ export class SolicitudesComponent {
   loading:boolean = false
 
   constructor(private accionesService: ApiService, private activatedroute: ActivatedRoute) {
-    this.loading = true
-    afterRender(()=>{
-      this.activatedroute.params.subscribe(params => {
-        this.division = params['division'];
-        this.obtenerLista()
-      })
-    })
-   }
+    this.loading = true;
+    this.activatedroute.params.subscribe(params => {
+      this.division = params['division'];
+      this.obtenerLista()
+    });
+  }
 
-   obtenerLista(){
+  /**
+   * @description Obtiene las solicitudes de contacto desde el servicio y las formatea
+   * @returns {void}
+   */
+   private obtenerLista(): void{
     this.accionesService.obtenerSolicitudes(this.division).subscribe(res=>{
-      this.solicitudes = res
-      this.loading = false
+      this.solicitudes = res;
+      this.loading = false;
     },error=>{
+      this.loading = false;
       console.log(error)
     })
   }
