@@ -17,6 +17,7 @@
       <label for="floatingInput">URL</label>
     </div>
     <!--DESCRIPCION-->
+    @if(componentInfo.type != "C"){
     <div class="mb-3">
       <label for="">Descripcion</label>
       <div class="mb-3">
@@ -24,7 +25,9 @@
         </editor>
       </div>
     </div>
+    }
 
+    @if(componentInfo.type != "A" && componentInfo.type != "C"){
     <!--IMAGEN-->
     <div class="mb-3">
       <h5>Agregar imagen de banner</h5>
@@ -68,7 +71,10 @@
       </div>
       }
     </div>
+    }
     <!--ARRAY DE IMAGENES-->
+    @if(componentInfo.type == "A" || componentInfo.type == "C"){
+
     <div class="mb-3">
       <h5>Agregar imagenes</h5>
       <div class="image-grid">
@@ -98,6 +104,7 @@
         </div>
       </div>
     </div>
+    }
     <!-- ID SECCION -->
     <div class="form-floating mb-3">
       <input type="text" class="form-control" placeholder="titulo" formControlName="idSeccion" [hidden]="true">
@@ -113,5 +120,5 @@
 </div>
 
 @if(loading){
-  <app-loading></app-loading>
+<app-loading></app-loading>
 }

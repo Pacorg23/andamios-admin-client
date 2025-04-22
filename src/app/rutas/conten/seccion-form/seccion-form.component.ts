@@ -75,7 +75,7 @@ export class SeccionFormComponent implements OnInit {
   public sectionForm: FormGroup;
   public comesForm: Category; //Categoria a la que pertenece la seccion
   public seccion: Section;
-  public loading:boolean = false
+  public loading: boolean = false
 
   //Configuracion del editor
   public config: EditorComponent['init'] = {
@@ -128,6 +128,7 @@ export class SeccionFormComponent implements OnInit {
   }
 
   public ngOnInit(): void {
+    this.loading = true
     this.initialiceForm();
     this.initializeComponent();
   }
@@ -136,17 +137,43 @@ export class SeccionFormComponent implements OnInit {
     this.route.params.subscribe(params => {
       const categoriaId = params['categoriaId'];
       const seccionId = params['seccionId'];
-  
+
       // Obtener información de la Sección por ID
       this.obtenerInformacionCategoria(categoriaId, seccionId);
     });
   }
-  
+
   private obtenerInformacionCategoria(categoriaId: number, seccionId?: string): void {
     this.contenService.getCategoriesById(categoriaId).subscribe(response => {
       this.componentInfo.name = response.title;
       this.componentInfo.Categoria_Id = response.id;
-  
+      this.componentInfo.type = response.tipo;
+      console.log(this.componentInfo.type)
+      console.log("Setting validators")
+      this.sectionForm.clearValidators();
+      this.sectionForm.get("title").addValidators([Validators.required]);
+      this.sectionForm.get("title").updateValueAndValidity();
+      switch (this.componentInfo.type) {
+        case "A":
+          this.sectionForm.get("description").addValidators([Validators.required])
+          this.sectionForm.get("description").updateValueAndValidity();
+
+          break;
+        case "B":
+          this.sectionForm.get("description").addValidators([Validators.required])
+          this.sectionForm.get("description").updateValueAndValidity();
+          break;
+        case "C":
+          break;
+        case "D":
+          this.sectionForm.get("description").addValidators([Validators.required])
+          this.sectionForm.get("description").updateValueAndValidity();
+          break;
+
+        default:
+          break;
+      }
+      this.loading = false
       if (seccionId) {
         this.procesarInformacionSeccion(seccionId);
       } else {
@@ -154,19 +181,19 @@ export class SeccionFormComponent implements OnInit {
       }
     });
   }
-  
+
   private procesarInformacionSeccion(seccionId: string): void {
     this.loading = true;
     this.componentInfo.action = ConstantsConten.EDIT_TITLE;
     this.componentInfo.Seccion_Id = _.lowerCase(seccionId);
-  
+
     this.contenService.getSectionById(this.componentInfo.Seccion_Id).subscribe(response => {
       this.seccion = response[0];
       this.actualizarInformacionSeccion();
       this.loading = false;
     });
   }
-  
+
   private actualizarInformacionSeccion(): void {
     this.componentInfo.name = this.seccion?.title || "";
     this.sectionForm.setValue({
@@ -177,12 +204,12 @@ export class SeccionFormComponent implements OnInit {
       file: "",
       img: this.seccion.img || null
     });
-  
+
     this.procesarImagenPrincipal();
     this.procesarImagenesSecundarias();
     this.procesarArchivo();
   }
-  
+
   private procesarImagenPrincipal(): void {
     if (this.seccion?.img) {
       const newFile = base64ToFile(this.seccion.img, "editImg");
@@ -196,7 +223,7 @@ export class SeccionFormComponent implements OnInit {
       this.cdRef.detectChanges();
     }
   }
-  
+
   private procesarImagenesSecundarias(): void {
     if (this.seccion?.imgs.length > 0) {
       this.seccion.imgs.forEach(img => {
@@ -211,11 +238,11 @@ export class SeccionFormComponent implements OnInit {
       });
     }
   }
-  
+
   private procesarArchivo(): void {
     if (this.seccion?.file) {
       const newFile = base64ToFile(this.seccion.file, "file");
-  
+
       this.sectionFile = {
         name: newFile.name,
         fileId: 0,
@@ -234,8 +261,7 @@ export class SeccionFormComponent implements OnInit {
   public initialiceForm(): void {
     this.sectionForm = this.formBuilder.group({
       title: ['', Validators.required],
-      // url: ['', Validators.required],
-      description: ['', Validators.required],
+      description: [''],
       img: [''],
       file: [''],
       idSeccion: [''],
@@ -444,16 +470,25 @@ export class SeccionFormComponent implements OnInit {
    * @returns {void}
    */
   public submitStage(): void {
-    this.loading= true;
+    this.loading = true;
+    if (this.sectionForm.invalid) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Formulario incompleto, por favor inserte los valores obligatorios'
+      });
+      this.loading = false
+      return
+    }
     const formData = this.createFormData();
-    
+
     if (this.isEditMode()) {
       this.updateSection(formData);
     } else {
       this.initializeSection(formData);
     }
   }
-  
+
   private createFormData(): FormData {
     const formData = new FormData();
     formData.append('title', this.sectionForm.get('title')?.value);
@@ -464,18 +499,18 @@ export class SeccionFormComponent implements OnInit {
     formData.append('archivo', this.sectionFile.file);
     return formData;
   }
-  
+
   private isEditMode(): boolean {
     return this.componentInfo.action === ConstantsConten.EDIT_TITLE;
   }
-  private restartImages(seccionid){
-    this.contenService.restartImagesSection(seccionid).subscribe(()=>{
+  private restartImages(seccionid) {
+    this.contenService.restartImagesSection(seccionid).subscribe(() => {
       console.log("Imagenes reiniciadas correctamente")
     })
   }
   private updateSection(formData: FormData): void {
     formData.append('id', this.sectionForm.get('idSeccion').value);
-  
+
     this.contenService.setSection(formData).subscribe(
       (categoriaCreada) => {
         this.handleSuccess('Sección inicializada correctamente', categoriaCreada.title);
@@ -486,7 +521,7 @@ export class SeccionFormComponent implements OnInit {
       (error) => this.handleError('Error al iniciar la Sección', error.message)
     );
   }
-  
+
   private initializeSection(formData: FormData): void {
     this.contenService.initSection(formData).subscribe(
       (seccionCreada) => {
@@ -497,7 +532,7 @@ export class SeccionFormComponent implements OnInit {
       () => this.handleError('Error al iniciar la seccion')
     );
   }
-  
+
   private handleSuccess(message: string, title?: string): void {
     Swal.fire({ icon: 'success', title: 'Correcto', text: message }).then(() => {
       if (title) {
@@ -506,18 +541,18 @@ export class SeccionFormComponent implements OnInit {
       }
     });
   }
-  
+
   private handleError(message: string, errorMessage?: string): void {
     const text = errorMessage ? `${message} ${errorMessage}` : message;
     Swal.fire({ icon: 'error', title: 'Error', text });
   }
-  
+
   private handleAdditionalUploads(sectionId: number): void {
     // this.uploadFile(this.presntationFile, sectionId + "", this.contenService.initImage.bind(this.contenService));
     this.uploadFile(this.sectionFile, sectionId + "", this.contenService.initFile.bind(this.contenService));
     this.uploadMultipleFiles(this.fileArray, sectionId + "");
   }
-  
+
   private uploadFile(file: any, sectionId: string, uploadFn: Function): void {
     if (file) {
       const formData = new FormData();
@@ -527,13 +562,13 @@ export class SeccionFormComponent implements OnInit {
       uploadFn(formData).subscribe();
     }
   }
-  
+
   private uploadMultipleFiles(files: any[], sectionId: string): void {
     if (files.length > 0) {
       files.forEach((file) => this.uploadFile(file, sectionId, this.contenService.initImage.bind(this.contenService)));
     }
   }
-  
+
 
   /**
    * @description Navigate into conten

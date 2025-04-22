@@ -42,8 +42,11 @@
     </mat-card-header>
     <mat-card-actions align="end">
       <!-- TODO solo las secciones de la categoria tipo B o manufactura pueden tener subsecciones -->
-      <button mat-fab extended type="button" class="btn btn-primary option-button mx-2"
-        (click)="getSubsections(seccion)"><mat-icon class="me-1">app_registration</mat-icon>Subsecciones</button>
+       @if(categorySelected.type == "B"){
+
+         <button mat-fab extended type="button" class="btn btn-primary option-button mx-2"
+         (click)="getSubsections(seccion)"><mat-icon class="me-1">app_registration</mat-icon>Subsecciones</button>
+        }
       <button mat-fab extended type="button" class="btn btn-danger option-button mx-2"
         (click)="deleteProcess(seccion.id, typeList)"><mat-icon class="me-1">delete</mat-icon>Delete</button>
       <button mat-fab extended type="button" class="btn btn-warning option-button mx-2"

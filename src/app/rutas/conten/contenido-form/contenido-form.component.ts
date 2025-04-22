@@ -299,58 +299,7 @@ export class ContenidoFormComponent implements OnInit {
       }
     });
   }
-  setType(categoria: string) {
-    this.categoria.tipo = categoria
-    // Obtén los controles actuales del formulario
-    const controles = this.categoryForm.controls;
-
-    // Ajusta las validaciones según la categoría
-    for (const campo in controles) {
-      controles[campo].clearValidators(); // Limpia validaciones actuales
-      // controles[campo].setValue(null); // Opcional: Limpia el valor actual
-    }
-
-    // Aplica validaciones dinámicas según la categoría seleccionada
-    switch (categoria) {
-      case 'A': // Ingeniería
-        if (controles['descripcion']) {
-          controles['descripcion'].setValidators(Validators.required);
-        }
-        if (controles['imagenes']) {
-          controles['imagenes'].setValidators(Validators.required);
-        }
-        break;
-      case 'B': // Manufactura
-        if (controles['descripcion']) {
-          controles['descripcion'].setValidators(Validators.required);
-        }
-        if (controles['imagenes']) {
-          controles['imagenes'].clearValidators(); // No requeridas
-        }
-        break;
-      case 'C': // Productos
-        if (controles['imagenes']) {
-          controles['imagenes'].setValidators(Validators.required);
-        }
-        if (controles['descripcion']) {
-          controles['descripcion'].clearValidators(); // No requerida
-        }
-        break;
-      case 'D': // Certificaciones
-        if (controles['imagenes']) {
-          controles['imagenes'].setValidators(Validators.required);
-        }
-        if (controles['certificaciones']) {
-          controles['certificaciones'].setValidators(Validators.required);
-        }
-        break;
-      default:
-        console.error('Categoría desconocida');
-    }
-
-    // Actualiza los cambios de validaciones
-    this.categoryForm.updateValueAndValidity();
-  }
+  
   public generateClickToFileImgArr(flag: string): void {
     switch (flag) {
       case 'presentation':
@@ -452,7 +401,7 @@ export class ContenidoFormComponent implements OnInit {
     formData.append('tipo', this.categoryForm.get('type').value);
     formData.append('description', (this.categoryForm.get('type').value != "C") ? this.categoryForm.get('description').value : "");
     formData.append('img', this.fileBanner.file);
-    formData.append('has_sections', (this.categoryForm.get('type').value == "B") ? "1" : "0");
+    formData.append('has_sections',  "1");
     formData.append('is_active', this.categoryForm.get('isActive').value);
     return formData;
   }
@@ -535,9 +484,9 @@ export class ContenidoFormComponent implements OnInit {
         title: 'Error',
         text: 'Formulario incompleto, por favor inserte nombre y tipo de categoria'
       });
+      this.loading  = false
       return
     }
-    // this.loading= true;
     const formData = this.generarFormData();
 
     if (this.isEditMode()) {
@@ -545,7 +494,6 @@ export class ContenidoFormComponent implements OnInit {
     } else {
       this.initializeCategory(formData);
     }
-    this.loading  = false 
 
   }
 

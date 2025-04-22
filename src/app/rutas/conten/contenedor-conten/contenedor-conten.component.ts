@@ -151,7 +151,8 @@ export class ContenedorContenComponent implements OnInit {
 
       this.categorySelected = {
         title: category.title,
-        id: category.id
+        id: category.id,
+        type: category.tipo
       }
       this.categoryTypeSelected = category.tipo;
     }
