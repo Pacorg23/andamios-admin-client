@@ -3,5 +3,7 @@ export class Carrusel {
   filename:string
   file:string
   createdAt:Date
+  needsAction?:boolean
+  action?:string
 }
 

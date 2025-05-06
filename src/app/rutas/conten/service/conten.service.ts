@@ -4,6 +4,8 @@ import { Observable } from 'rxjs';
 
 import { Category } from '../models/category';
 import { Section } from '../models/seccion';
+import { Sucursal } from '../../../models/general/sucursal';
+import { Carrusel } from '../../../models/andamios/carrusel';
 import { FileInput } from '../models/seccion';
 
 @Injectable({
@@ -39,7 +41,7 @@ export class ContenService {
     console.log(categoria)
     return this.http.put<Category>(`${this.URL}/setCategory`, categoria); //initCategory
   }
-  
+
 
   /**
    * @description Obtiene las categorías
@@ -214,7 +216,7 @@ export class ContenService {
   public restartImagesSubsection(id: number): Observable<void> {
     return this.http.delete<void>(`${this.URL}/restartImagesSubsection/${id}`); //initCategory
   }
-  
+
   //Files
   /**
      * @description Inicia una imagen
@@ -224,7 +226,4 @@ export class ContenService {
   public initFile(seccion: FormData): Observable<FileInput> {
     return this.http.post<FileInput>(`${this.URL}/initFile`, seccion); //initCategory
   }
-  
-  
-
 }
