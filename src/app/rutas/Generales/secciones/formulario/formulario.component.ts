@@ -12,6 +12,7 @@ import { LoadingComponent } from '../../../../effects/loading/loading.component'
 import { ImageService } from '../../../../services/image.service';
 import { ActivatedRoute } from '@angular/router';
 import _ from 'lodash';
+import { ENV_CONSTANTS } from '../../../../services/environment.service';
 
 @Component({
   selector: 'app-formulario',
@@ -79,7 +80,11 @@ export class FormularioComponent {
 
   loading: boolean = false;
 
-  constructor(private fb: FormBuilder, private apiService: ApiService, private imgService: ImageService, private activatedroute: ActivatedRoute) {
+  public apiKey: string;
+  constructor(private fb: FormBuilder, 
+    private apiService: ApiService, 
+    private imgService: ImageService, 
+    private activatedroute: ActivatedRoute) {
     this.formulario = this.fb.group({
       nombre: ['', Validators.required],
       url: [''],
@@ -100,6 +105,7 @@ export class FormularioComponent {
       banner: ['']
     })
 
+    this.apiKey = ENV_CONSTANTS.EDITOR_KEY;
     afterRender(() => {
       window.scrollTo(0, 0);
       this.activatedroute.params.subscribe(params => {

@@ -11,6 +11,7 @@ import { Category } from '../models/category';
 import { Section } from '../models/seccion';
 import { Title } from '@angular/platform-browser';
 import { LoadingComponent } from '../../../effects/loading/loading.component';
+import { ENV_CONSTANTS } from '../../../services/environment.service';
 
 export class ComponentInfo {
   action: string;
@@ -76,6 +77,7 @@ export class SeccionFormComponent implements OnInit {
   public comesForm: Category; //Categoria a la que pertenece la seccion
   public seccion: Section;
   public loading: boolean = false
+  public apiKey: string;
 
   //Configuracion del editor
   public config: EditorComponent['init'] = {
@@ -125,6 +127,7 @@ export class SeccionFormComponent implements OnInit {
       file: new File([], '')
     }
     this.urlPersonalized = '';
+    this.apiKey = ENV_CONSTANTS.EDITOR_KEY;
   }
 
   public ngOnInit(): void {
@@ -148,8 +151,6 @@ export class SeccionFormComponent implements OnInit {
       this.componentInfo.name = response.title;
       this.componentInfo.Categoria_Id = response.id;
       this.componentInfo.type = response.tipo;
-      console.log(this.componentInfo.type)
-      console.log("Setting validators")
       this.sectionForm.clearValidators();
       this.sectionForm.get("title").addValidators([Validators.required]);
       this.sectionForm.get("title").updateValueAndValidity();
