@@ -490,7 +490,17 @@ export class SubseccionFormComponent implements OnInit {
         this.handleAdditionalUploads(subseccionCreada.id);
         this.router.navigate(['conten/editor']);
       },
-      () => this.handleError('Error al iniciar la Subsección')
+      (response) => {
+        console.log("response")
+        console.log(response)
+        if (response.status == 409) {
+          this.handleError('Ya existe una Subseccion con ese url')          
+        } else{
+          
+          this.handleError('Error al iniciar la categoría')
+        }
+        this.loading = false
+      }
     );
   }
   

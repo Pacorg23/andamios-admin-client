@@ -268,7 +268,12 @@ export class ContenidoFormComponent implements OnInit {
         this.loading = true
         this.contenService.getCategoriesById(this.componentInfo.id).subscribe((response) => {
           this.categoria = response;
-          console.log(response)
+          if (response.is_default) {
+            this.categoryForm.get("name").disable();            
+          } else {
+            this.categoryForm.get("name").enable();            
+            
+          }
           this.componentInfo.name = this.categoria.title
           this.categoryForm.setValue({
             id: _.lowerCase(params["id"]),
@@ -433,6 +438,7 @@ export class ContenidoFormComponent implements OnInit {
       .replace(/\s+/g, '-');
     return formatted;
   }
+ 
   private generarFormData(): FormData {
 
     const formData = new FormData();
@@ -470,7 +476,7 @@ export class ContenidoFormComponent implements OnInit {
   }
   private updateCategory(formData: FormData): void {
     formData.append('id', this.categoryForm.get('id').value);
-
+    
     this.contenService.setCategory(formData).subscribe(
       (categoriaCreada) => {
 
@@ -497,11 +503,22 @@ export class ContenidoFormComponent implements OnInit {
     this.contenService.initCategory(formData).subscribe(
       (categoriaCreada) => {
         console.log(categoriaCreada)
+        console.log(categoriaCreada)
         this.handleSuccess(`Categoría inicializada correctamente con id: ${categoriaCreada.id}`);
         this.handleAdditionalUploads(categoriaCreada.id);
         this.router.navigate(['conten/editor']);
       },
-      () => this.handleError('Error al iniciar la categoría')
+      (response) => {
+        console.log("response")
+        console.log(response)
+        if (response.status == 409) {
+          this.handleError('Ya existe una Categoria con ese url')          
+        } else{
+          
+          this.handleError('Error al iniciar la categoría')
+        }
+        this.loading = false
+      }
     );
   }
   private handleAdditionalUploads(categoriaId: number): void {

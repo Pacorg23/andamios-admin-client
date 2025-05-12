@@ -530,7 +530,15 @@ export class SeccionFormComponent implements OnInit {
         this.handleAdditionalUploads(seccionCreada.id);
         this.router.navigate(['conten/editor']);
       },
-      () => this.handleError('Error al iniciar la seccion')
+      (response) => {
+        if (response.status == 409) {
+          this.handleError('Ya existe una Seccion con ese url')          
+        } else{
+          
+          this.handleError('Error al iniciar la categoría')
+        }
+        this.loading = false
+      }
     );
   }
 
