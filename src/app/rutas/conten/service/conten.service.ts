@@ -226,4 +226,41 @@ export class ContenService {
   public initFile(seccion: FormData): Observable<FileInput> {
     return this.http.post<FileInput>(`${this.URL}/initFile`, seccion); //initCategory
   }
+
+  // CARRUSEL
+  public borrarCarrusel(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.URL}/borrarCarrusel/${id}`);
+  }
+
+  public obtenerCarrusel(): Observable<Carrusel[]> {
+    return this.http.get<Carrusel[]>(`${this.URL}/obtenerCarrusel`);
+  }
+
+  public agregarCarrusel(carrusel: FormData): Observable<Carrusel> {
+    return this.http.post<Carrusel>(`${this.URL}/carrusel`, carrusel);
+  }
+
+  public editarCarrusel(carrusel: FormData): Observable<Carrusel> {
+    return this.http.put<Carrusel>(`${this.URL}/modificarCarrusel`, carrusel);
+  }
+
+  // Sucursales
+
+  public obtenerSucursales(): Observable<Sucursal[]> {
+    return this.http.get<Sucursal[]>(`${this.URL}/obtenerSucursales`);
+  }
+
+  public agregarSucursal(sucursal: FormData): Observable<Sucursal> {
+    return this.http.post<Sucursal>(`${this.URL}/sucursales`, sucursal);
+  }
+
+  public editarSucursal(sucursal: FormData): Observable<Sucursal> {
+    return this.http.put<Sucursal>(`${this.URL}/modificarSucursales`, sucursal);
+  }
+
+  public eliminarSucursal(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.URL}/eliminarSucursales/${id}`);
+  }
+
+
 }

@@ -6,6 +6,9 @@ import { ContactoComponent } from "../Generales/contacto/contacto.component";
 import { ContenidoFormComponent } from "./contenido-form/contenido-form.component";
 import { ContenedorContenComponent } from "./contenedor-conten/contenedor-conten.component";
 import { SeccionFormComponent } from "./seccion-form/seccion-form.component";
+import { SucursalComponent } from "./sucursal/sucursal.component";
+import { CarruselContenComponent } from "./carrusel-conten/carrusel-conten.component";
+import { SubseccionFormComponent } from "./subseccion-form/subseccion-form.component";
 
 export const routes: Routes = [
   { path: "", redirectTo: "home", pathMatch: "full" },
