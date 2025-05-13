@@ -10,6 +10,7 @@ import { ContenService } from '../service/conten.service';
 import Swal from 'sweetalert2';
 import { Category } from '../models/category';
 import { LoadingComponent } from '../../../effects/loading/loading.component';
+import { ENV_CONSTANTS } from '../../../services/environment.service';
 
 export interface FileObject {
   name: string,
@@ -80,6 +81,9 @@ export class ContenidoFormComponent implements OnInit {
   public urlPersonalized: string;
   public categoria: Category;
   public loading: boolean = false
+  public apiKey: string;
+  public isManufactura: boolean = false;
+
 
   //Configuracion del editor
   public config: EditorComponent['init'] = {
@@ -120,7 +124,8 @@ export class ContenidoFormComponent implements OnInit {
     this.componentInfo = new ComponentInfo();
     this.fileBanner = { name: '', fileId: 0, url: '', file: null };
     this.urlPersonalized = '';
-    this.categoria = { title: '', description: '', tipo: '' }
+    this.categoria
+    this.apiKey = ENV_CONSTANTS.EDITOR_KEY;
   }
 
   /**
@@ -146,7 +151,22 @@ export class ContenidoFormComponent implements OnInit {
     }
     );
   }
-
+  
+  public generateClickToFile(flag: string): void {
+    switch (flag) {
+      case 'presentation':
+        document.getElementById('file-input-presentation')?.click();
+        break;
+      case 'document':
+        document.getElementById('file-input-document')?.click();
+        break;
+      case 'array':
+        document.getElementById('file-input-array')?.click();
+        break;
+      default:
+        break;
+    }
+  }
   /**
      * @description Agrega un archivo a la lista de archivos
      * @param {Event} event - Evento del input file
@@ -248,6 +268,12 @@ export class ContenidoFormComponent implements OnInit {
         this.loading = true
         this.contenService.getCategoriesById(this.componentInfo.id).subscribe((response) => {
           this.categoria = response;
+          if (response.is_default) {
+            this.categoryForm.get("name").disable();            
+          } else {
+            this.categoryForm.get("name").enable();            
+            
+          }
           this.componentInfo.name = this.categoria.title
           this.categoryForm.setValue({
             id: _.lowerCase(params["id"]),
@@ -285,6 +311,7 @@ export class ContenidoFormComponent implements OnInit {
               }
             })
           }
+          this.procesarImagenesSecundarias()
           this.loading = false
 
         }, (error) => {
@@ -299,7 +326,20 @@ export class ContenidoFormComponent implements OnInit {
       }
     });
   }
-  
+  private procesarImagenesSecundarias(): void {
+    if (this.categoria?.imgs?.length > 0) {
+      this.categoria.imgs.forEach(img => {
+        const file = base64ToFile(img.data, img.title);
+        this.fileArray.push({
+          name: img.title,
+          fileId: img.id,
+          url: URL.createObjectURL(file),
+          file: file
+        });
+        this.cdRef.detectChanges();
+      });
+    }
+  }
   public generateClickToFileImgArr(flag: string): void {
     switch (flag) {
       case 'presentation':
@@ -328,6 +368,11 @@ export class ContenidoFormComponent implements OnInit {
       isActive: [true],
       img: [''],
     });
+    this.categoryForm.get('type')?.valueChanges.subscribe(value => {
+      console.log("Valor actualizado:", this.categoryForm.get('type'));
+      this.isManufactura = value == "B" ? true: false;
+      console.log("Valor actualizado:", this.isManufactura);
+    });
   }
 
   /**
@@ -335,7 +380,7 @@ export class ContenidoFormComponent implements OnInit {
    * @param {void}
    * @returns void
    */
-  public generateClickToFile(): void {
+  public generateClickToFileBanner(): void {
     document.getElementById('file-input').click();
   }
 
@@ -376,7 +421,7 @@ export class ContenidoFormComponent implements OnInit {
     this.categoryForm.get('img').patchValue('');
 
     setTimeout(() => {
-      this.generateClickToFile();
+      this.generateClickToFileBanner();
     }, 500);
   }
 
@@ -393,6 +438,7 @@ export class ContenidoFormComponent implements OnInit {
       .replace(/\s+/g, '-');
     return formatted;
   }
+ 
   private generarFormData(): FormData {
 
     const formData = new FormData();
@@ -416,6 +462,7 @@ export class ContenidoFormComponent implements OnInit {
   }
   private uploadMultipleFiles(files: any[], categoryId: string): void {
     if (files.length > 0) {
+      console.log(files.length)
       files.forEach((file) => this.uploadFile(file, categoryId, this.contenService.initImage.bind(this.contenService)));
     }
   }
@@ -429,7 +476,7 @@ export class ContenidoFormComponent implements OnInit {
   }
   private updateCategory(formData: FormData): void {
     formData.append('id', this.categoryForm.get('id').value);
-
+    
     this.contenService.setCategory(formData).subscribe(
       (categoriaCreada) => {
 
@@ -456,18 +503,26 @@ export class ContenidoFormComponent implements OnInit {
     this.contenService.initCategory(formData).subscribe(
       (categoriaCreada) => {
         console.log(categoriaCreada)
+        console.log(categoriaCreada)
         this.handleSuccess(`Categoría inicializada correctamente con id: ${categoriaCreada.id}`);
         this.handleAdditionalUploads(categoriaCreada.id);
         this.router.navigate(['conten/editor']);
       },
-      () => this.handleError('Error al iniciar la categoría')
+      (response) => {
+        console.log("response")
+        console.log(response)
+        if (response.status == 409) {
+          this.handleError('Ya existe una Categoria con ese url')          
+        } else{
+          
+          this.handleError('Error al iniciar la categoría')
+        }
+        this.loading = false
+      }
     );
   }
   private handleAdditionalUploads(categoriaId: number): void {
-    if (this.fileBanner.file) {
-
-      this.uploadFile(this.fileBanner, categoriaId + "", this.contenService.initImage.bind(this.contenService));
-    }
+    
     // this.uploadFile(this.fileBanner, categoriaId + "", this.contenService.initFile.bind(this.contenService));
     this.uploadMultipleFiles(this.fileArray, categoriaId + "");
   }

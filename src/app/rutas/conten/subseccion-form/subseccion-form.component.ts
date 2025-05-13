@@ -11,6 +11,7 @@ import { Category } from '../models/category';
 import { Section } from '../models/seccion';
 import { Title } from '@angular/platform-browser';
 import { LoadingComponent } from '../../../effects/loading/loading.component';
+import { ENV_CONSTANTS } from '../../../services/environment.service';
 
 export class ComponentInfo {
   action: string;
@@ -74,7 +75,8 @@ export class SubseccionFormComponent implements OnInit {
   public sectionForm: FormGroup;
   public comesForm: Category; //Categoria a la que pertenece la seccion
   public subseccion: Section;
-  public loading:boolean = false
+  public loading:boolean = false;
+  public apiKey: string; 
 
   //Configuracion del editor
   public config: EditorComponent['init'] = {
@@ -124,6 +126,7 @@ export class SubseccionFormComponent implements OnInit {
       file: new File([], '')
     }
     this.urlPersonalized = '';
+    this.apiKey = ENV_CONSTANTS.EDITOR_KEY;
   }
 
   public ngOnInit(): void {
@@ -487,7 +490,17 @@ export class SubseccionFormComponent implements OnInit {
         this.handleAdditionalUploads(subseccionCreada.id);
         this.router.navigate(['conten/editor']);
       },
-      () => this.handleError('Error al iniciar la Subsección')
+      (response) => {
+        console.log("response")
+        console.log(response)
+        if (response.status == 409) {
+          this.handleError('Ya existe una Subseccion con ese url')          
+        } else{
+          
+          this.handleError('Error al iniciar la categoría')
+        }
+        this.loading = false
+      }
     );
   }
   

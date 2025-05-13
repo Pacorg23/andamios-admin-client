@@ -33,7 +33,7 @@
         <label class="form-check-label" for="inlineRadio1">Tipo Ingenieria</label>
       </div>
       <div class="form-check form-check-inline">
-        <input class="form-check-input" type="radio" name="type" id="inlineRadio2" value="B" formControlName="type" >
+        <input class="form-check-input" type="radio" name="type" id="inlineRadio2" value="B" formControlName="type"  >
         <label class="form-check-label" for="inlineRadio2">Tipo Manufactura</label>
       </div>
       <div class="form-check form-check-inline">
@@ -50,7 +50,7 @@
       <div class="mb-3">
         <label for="">Descripcion</label>
         <div class="mb-3">
-          <editor apiKey="pdmcwg4496yv6p8pfgeue5qew4yqbpgszy9ycv6tgf1pwdxd" [init]="config" formControlName="description">
+          <editor [apiKey]="apiKey" [init]="config" formControlName="description">
           </editor>
         </div>
       </div>
@@ -68,7 +68,7 @@
           
           <div class="item">
             <div class="file-input-container">
-              <button type="button" class="btn btn-warning banner-btn" (click)="generateClickToFile()">
+              <button type="button" class="btn btn-warning banner-btn" (click)="generateClickToFileBanner()">
                 <i class="material-icons">attachment</i> Agregar banner
               </button>
               <input title="image" type="file" accept="image/*" class="file-input" id="file-input"
@@ -77,6 +77,39 @@
           </div>
         }
       </div>
+      <!--ARRAY DE IMAGENES-->
+    @if(isManufactura){
+
+      <div class="mb-3">
+        <h5>Agregar imagenes</h5>
+        <div class="image-grid">
+          @for (file of fileArray; track file.fileId) {
+          <div class="item-array">
+            <img [src]="file.url" alt="image" />
+            <div class="edit_btn_array">
+              <i class="material-icons" (click)="removeImageFromFileArray(file.fileId)">delete</i>
+            </div>
+          </div>
+          }
+        </div>
+        @if(fileArray.length === 0) {
+        <div class="item">
+          <p>No hay imagenes</p>
+        </div>
+        }
+  
+        <div class="item mt-2">
+          <div class="file-input-container">
+            <button type="button" class="btn btn-warning file-input-button btn-width"
+              (click)="generateClickToFile('array')">
+              <i class="material-icons me-2">add</i> Agregar Imagen
+            </button>
+            <input title="image" type="file" accept="image/*" class="file-input" id="file-input-array"
+              (change)="addImageToFileArray($event, fileArray.length + 1)">
+          </div>
+        </div>
+      </div>
+      }
 
     <button type="button" class="btn btn-danger confirm-button mx-1" (click)="goTo('editor')">Cancelar</button>
     <button type="submit" class="btn btn-success confirm-button mx-1">{{componentInfo?.action}}</button>

@@ -1,4 +1,5 @@
 import { Seccion } from "../../../models/general/navbar";
+import { FileInput, Section } from "./seccion";
 
 export interface Category {
   id?: number; // Opcional porque es autoincremental
@@ -10,5 +11,6 @@ export interface Category {
   is_default?: boolean; // Indica si es la categoría por defecto -> false para secciones creadas personalziadas
   description: string; // Descripción de la categoría *
   img?: string; // Imagen en formato Base64 o URL -> Banner de la categoría *
-  sections?: Seccion[]; // Arreglo de secciones objeto Seccion -> {id, name, url}
+  imgs: FileInput[]; // Arreglo de imágenes objeto ImagesInput -> {id, name, img}
+  sections?: Section[]; // Arreglo de secciones objeto Seccion -> {id, name, url}
 }
