@@ -104,8 +104,9 @@
               (click)="generateClickToFile('array')">
               <i class="material-icons me-2">add</i> Agregar Imagen
             </button>
-            <input title="image" type="file" accept="image/*" class="file-input" id="file-input-array"
+            <input title="image" type="file" accept="image/*" class="file-input" id="file-input-array" multiple
               (change)="addImageToFileArray($event, fileArray.length + 1)">
+              
           </div>
         </div>
       </div>

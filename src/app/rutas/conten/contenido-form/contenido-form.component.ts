@@ -175,16 +175,18 @@ export class ContenidoFormComponent implements OnInit {
      */
   public addImageToFileArray(event: any, newID: number): void {
     if (!_.isNil(event.target)) {
-      const newFile = _.head(event.target.files);
-      if (newFile) {
-        this.fileArray.push({
+      for(var i=0 ; i< event.target.files.length; i++){
+        const newFile = event.target.files[i];
+        if (newFile) {
+          this.fileArray.push({
           name: newFile.name,
-          fileId: newID,
+          fileId: newID + i,
           url: URL.createObjectURL(newFile),
           file: newFile
         });
-        this.cdRef.detectChanges();
       }
+      this.cdRef.detectChanges();
+    }
     } else {
       console.error('Error al agregar imagen al array');
     }
