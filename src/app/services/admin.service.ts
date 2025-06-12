@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { catchError, Observable, throwError } from 'rxjs';
 import { Usuario } from '../models/admin/usuario';
 
-import { ENV_CONSTANTS } from '../services/environment.service';
+import { ENV_CONSTANTS } from '../../environment.service';
 
 const SERVICE_NAME = 'admin';
 
@@ -20,8 +20,12 @@ export class AdminService {
     })
   }
 
-  constructor(private http: HttpClient ) {
-    this.URL = `${ENV_CONSTANTS.API_URL}:${ENV_CONSTANTS.PORT}/${SERVICE_NAME}/`;
+  constructor(private http: HttpClient) {
+    if (!ENV_CONSTANTS.PRODUCTION) {
+      this.URL = `${ENV_CONSTANTS.DEV_URL}:${ENV_CONSTANTS.PORT}/${SERVICE_NAME}/`;
+    } else {
+      this.URL = `${ENV_CONSTANTS.API_URL}/${SERVICE_NAME}/`;
+    }
   }
 
   login(usuario) {
@@ -52,9 +56,6 @@ export class AdminService {
     return this.http.put(`${this.URL}modificarUsuario`, usuario, this.httpOptions)
   }
 
-  /**
-   *
-   */
   cerrarSesion(adminId: number, sessionId: string) {
     const user = {
       id: adminId

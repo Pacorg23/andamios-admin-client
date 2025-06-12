@@ -11,7 +11,7 @@ import { Category } from '../models/category';
 import { Section } from '../models/seccion';
 import { Title } from '@angular/platform-browser';
 import { LoadingComponent } from '../../../effects/loading/loading.component';
-import { ENV_CONSTANTS } from '../../../services/environment.service';
+import { ENV_CONSTANTS } from '../../../../environment.service';
 
 export class ComponentInfo {
   action: string;
@@ -532,9 +532,9 @@ export class SeccionFormComponent implements OnInit {
       },
       (response) => {
         if (response.status == 409) {
-          this.handleError('Ya existe una Seccion con ese url')          
+          this.handleError('Ya existe una Seccion con ese url')
         } else{
-          
+
           this.handleError('Error al iniciar la categoría')
         }
         this.loading = false

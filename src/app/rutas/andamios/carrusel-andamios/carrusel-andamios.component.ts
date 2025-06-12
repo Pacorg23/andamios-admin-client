@@ -85,11 +85,20 @@ export class CarruselAndamiosComponent {
     })
   }
 
-  show() {
+  private show(): void {
     this.accionesService.obtenerCarrusel().subscribe(res => {
       this.carrusel = res
       this.loading = false
-    })
+    }, error => {
+      Swal.fire({
+        title: "Error al cargar los datos",
+        confirmButtonColor: "#B30000",
+        timer: 2000,
+        icon: "error"
+      }).then(() => {
+        this.loading = false
+      });
+    });
   }
 
   onFileChange(event){
