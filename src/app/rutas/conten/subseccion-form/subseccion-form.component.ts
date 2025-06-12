@@ -11,7 +11,7 @@ import { Category } from '../models/category';
 import { Section } from '../models/seccion';
 import { Title } from '@angular/platform-browser';
 import { LoadingComponent } from '../../../effects/loading/loading.component';
-import { ENV_CONSTANTS } from '../../../services/environment.service';
+import { ENV_CONSTANTS } from '../../../../environment.service';
 
 export class ComponentInfo {
   action: string;
@@ -75,7 +75,7 @@ export class SubseccionFormComponent implements OnInit {
   public sectionForm: FormGroup;
   public comesForm: Category; //Categoria a la que pertenece la seccion
   public subseccion: Section;
-  public loading: boolean = false;
+  public loading:boolean = false;
   public apiKey: string;
 
   //Configuracion del editor
@@ -184,9 +184,9 @@ export class SubseccionFormComponent implements OnInit {
       });
 
 
-      this.procesarImagenPrincipal();
-      this.procesarImagenesSecundarias();
-      this.procesarArchivo();
+    this.procesarImagenPrincipal();
+    this.procesarImagenesSecundarias();
+    this.procesarArchivo();
     });
   }
   private procesarImagenPrincipal(): void {
@@ -497,7 +497,7 @@ export class SubseccionFormComponent implements OnInit {
         console.log(response)
         if (response.status == 409) {
           this.handleError('Ya existe una Subseccion con ese url')
-        } else {
+        } else{
 
           this.handleError('Error al iniciar la categoría')
         }

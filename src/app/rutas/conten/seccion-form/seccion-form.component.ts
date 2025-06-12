@@ -11,7 +11,7 @@ import { Category } from '../models/category';
 import { Section } from '../models/seccion';
 import { Title } from '@angular/platform-browser';
 import { LoadingComponent } from '../../../effects/loading/loading.component';
-import { ENV_CONSTANTS } from '../../../services/environment.service';
+import { ENV_CONSTANTS } from '../../../../environment.service';
 
 export class ComponentInfo {
   action: string;

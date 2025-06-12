@@ -10,7 +10,7 @@ import { ContenService } from '../service/conten.service';
 import Swal from 'sweetalert2';
 import { Category } from '../models/category';
 import { LoadingComponent } from '../../../effects/loading/loading.component';
-import { ENV_CONSTANTS } from '../../../services/environment.service';
+import { ENV_CONSTANTS } from '../../../../environment.service';
 
 export interface FileObject {
   name: string,
@@ -151,7 +151,7 @@ export class ContenidoFormComponent implements OnInit {
     }
     );
   }
-  
+
   public generateClickToFile(flag: string): void {
     switch (flag) {
       case 'presentation':
@@ -271,10 +271,10 @@ export class ContenidoFormComponent implements OnInit {
         this.contenService.getCategoriesById(this.componentInfo.id).subscribe((response) => {
           this.categoria = response;
           if (response.is_default) {
-            this.categoryForm.get("name").disable();            
+            this.categoryForm.get("name").disable();
           } else {
-            this.categoryForm.get("name").enable();            
-            
+            this.categoryForm.get("name").enable();
+
           }
           this.componentInfo.name = this.categoria.title
           this.categoryForm.setValue({
@@ -440,7 +440,7 @@ export class ContenidoFormComponent implements OnInit {
       .replace(/\s+/g, '-');
     return formatted;
   }
- 
+
   private generarFormData(): FormData {
 
     const formData = new FormData();
@@ -478,7 +478,7 @@ export class ContenidoFormComponent implements OnInit {
   }
   private updateCategory(formData: FormData): void {
     formData.append('id', this.categoryForm.get('id').value);
-    
+
     this.contenService.setCategory(formData).subscribe(
       (categoriaCreada) => {
 
@@ -514,9 +514,9 @@ export class ContenidoFormComponent implements OnInit {
         console.log("response")
         console.log(response)
         if (response.status == 409) {
-          this.handleError('Ya existe una Categoria con ese url')          
+          this.handleError('Ya existe una Categoria con ese url')
         } else{
-          
+
           this.handleError('Error al iniciar la categoría')
         }
         this.loading = false
@@ -524,7 +524,7 @@ export class ContenidoFormComponent implements OnInit {
     );
   }
   private handleAdditionalUploads(categoriaId: number): void {
-    
+
     // this.uploadFile(this.fileBanner, categoriaId + "", this.contenService.initFile.bind(this.contenService));
     this.uploadMultipleFiles(this.fileArray, categoriaId + "");
   }
