@@ -7,14 +7,15 @@ import { Section } from '../models/seccion';
 import { Sucursal } from '../../../models/general/sucursal';
 import { Carrusel } from '../../../models/andamios/carrusel';
 import { FileInput } from '../models/seccion';
+import { ENV_CONSTANTS } from '../../../../environment.service';
+const SERVICE_NAME = 'conten';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ContenService {
 
-  // private URL = 'http://localhost:3032/api/formdata'; //http://localhost:3000/conten/
-  private URL = 'http://localhost:3000/conten';
+  private URL: string;
 
   private httpOptions = {
     headers: new HttpHeaders({
@@ -22,7 +23,14 @@ export class ContenService {
     })
   }
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {
+    if (!ENV_CONSTANTS.PRODUCTION) {
+      this.URL = `${ENV_CONSTANTS.DEV_URL}:${ENV_CONSTANTS.PORT}/${SERVICE_NAME}/`;
+    } else {
+      this.URL = `${ENV_CONSTANTS.API_URL}/${SERVICE_NAME}`;
+    }
+  }
+
   //Categorias
   /**
    * @description Inicia una categoría
