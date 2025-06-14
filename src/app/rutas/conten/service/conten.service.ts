@@ -26,25 +26,24 @@ export class ContenService {
   //Categorias
   /**
    * @description Inicia una categoría
-   * @param {FormData} categoria - Categoría a iniciar
+   * @param {FormData} categoria - Datos de la categoría a iniciar
    * @returns {Observable<Category>} - Categoría creada
    */
   public initCategory(categoria: FormData): Observable<Category> {
-    return this.http.post<Category>(`${this.URL}/initCategory`, categoria); //initCategory
+    return this.http.post<Category>(`${this.URL}/initCategory`, categoria);
   }
+
   /**
    * @description Modifica una categoría
-   * @param {FormData} categoria - Categoría a modificada
+   * @param {FormData} categoria - Datos de la categoría a modificada
    * @returns {Observable<Category>} - Categoría modificada
    */
   public setCategory(categoria: FormData): Observable<Category> {
-    console.log(categoria)
-    return this.http.put<Category>(`${this.URL}/setCategory`, categoria); //initCategory
+    return this.http.put<Category>(`${this.URL}/setCategory`, categoria);
   }
 
-
   /**
-   * @description Obtiene las categorías
+   * @description Obtiene las categorías sin imagenes para mostrar en la lista de admin
    * @param {void}
    * @returns {Observable<Category[]>} - Categorías
    */
@@ -53,178 +52,194 @@ export class ContenService {
   }
 
   /**
-   * @description Obtiene una categoría
+   * @description Obtiene una categoría según su URL
    * @param {string} name - Nombre de la categoría
    * @returns {Observable<Category>} - Categoría
    */
   public getCategory(name: string): Observable<Category> {
     return this.http.get<Category>(`${this.URL}/getCategory/${name}`);
   }
+
+  /**
+   * @description Obtiene una categoría según su Id
+   * @param {number} id - Id de la categoría
+   * @returns {Observable<Category>} - Categoría
+   */
   public getCategoriesById(id: number): Observable<Category> {
     return this.http.get<Category>(`${this.URL}/getCategoriesById/${id}`);
   }
-
+  /**
+   * @description Borra una categoría según su Id
+   * @param {number} id - Nombre de la categoría
+   * @returns {Observable<void>} 
+   */
   public deleteCategories(id: number): Observable<void> {
     return this.http.delete<void>(`${this.URL}/deleteCategories/${id}`);
   }
   //Secciones
   /**
-   * @description Obtiene una categoría
-   * @param {string} name - Nombre de la categoría
-   * @returns {Observable<Category>} - Categoría
+   * @description Obtiene un arreglo de secciones segun el Id de su Categoria padre
+   * @param {Number} id - URL de la Sección
+   * @returns {Observable<Section[]>} - Arreglo de secciones
    */
   public getSectionsByFatherId(id: Number): Observable<Section[]> {
     return this.http.get<Section[]>(`${this.URL}/getSectionsByFatherId/${id}`);
   }
-  /**
-   * @description Obtiene una categoría
-   * @param {string} name - Nombre de la categoría
-   * @returns {Observable<Category>} - Categoría
-   */
-  public getSectionsById(id: Number): Observable<Section[]> {
-    return this.http.get<Section[]>(`${this.URL}/getSectionsById/${id}`);
-  }
+
   /**
    * @description Inicia una seccion
-   * @param {FormData} categoria - Seccion a iniciar
-   * @returns {Observable<Section>} - Seccion creada
+   * @param {FormData} seccion - Sección a iniciar
+   * @returns {Observable<Section>} - Sección iniciada
    */
   public initSection(seccion: FormData): Observable<Section> {
-    return this.http.post<Section>(`${this.URL}/initSection`, seccion); //initCategory
+    return this.http.post<Section>(`${this.URL}/initSection`, seccion);
   }
+
   /**
-  * @description Inicia una categoría
-  * @param {FormData} categoria - Categoría a iniciar
-  * @returns {Observable<Category>} - Categoría creada
+  * @description Modifica una Sección
+  * @param {FormData} categoria - Sección a modificar
+  * @returns {Observable<Section>} - Sección modificada
   */
   public setSection(categoria: FormData): Observable<Section> {
-    return this.http.put<Section>(`${this.URL}/setSection`, categoria); //initCategory
+    return this.http.put<Section>(`${this.URL}/setSection`, categoria);
   }
+
   /**
- * @description Borra una seccion
- * @param {FormData} categoria - Seccion a borrar
- * @returns {Observable<Category>} - Seccion creada
+ * @description Borra una Sección
+ * @param {number} id - Id de la secció a borrar
+ * @returns {Observable<boolean>} - Borrado exitoso/fallido
  */
   public deleteSection(id: number): Observable<boolean> {
-    return this.http.delete<boolean>(`${this.URL}/deleteSection/${id}`); //initCategory
+    return this.http.delete<boolean>(`${this.URL}/deleteSection/${id}`);
   }
+
   /**
-  * @description Obtiene una categoría
-  * @param {string} name - Nombre de la categoría
-  * @returns {Observable<Category>} - Categoría
+  * @description Obtiene una Sección por su Id
+  * @param {Number} id - Nombre de la Sección
+  * @returns {Observable<Section>} - Sección
   */
   public getSectionById(id: Number): Observable<Section> {
     return this.http.get<Section>(`${this.URL}/getSectionById/${id}`);
   }
+
   /**
-  * @description Obtiene una categoría
-  * @param {string} name - Nombre de la categoría
-  * @returns {Observable<Category>} - Categoría
+  * @description Obtiene la información de una sección según su id
+  * @param {Number} id - Id de la sección
+  * @returns {Observable<Section>} - Sección
   */
   public getSectionInfo(id: Number): Observable<Section> {
     return this.http.get<Section>(`${this.URL}/getSectionInfo/${id}`);
   }
+
   //Subsecciones
   /**
-   * @description Obtiene una categoría
-   * @param {string} name - Nombre de la categoría
-   * @returns {Observable<Category>} - Categoría
+   * @description Obtiene una subsección según el id de su sección padre.
+   * @param {Number} id - Nombre de la sección padre
+   * @returns {Observable<Category>} - Subsección
    */
   public getSubsectionsByFatherId(id: Number): Observable<Section[]> {
     return this.http.get<Section[]>(`${this.URL}/getSubsectionsByFatherId/${id}`);
   }
+
   /**
-   * @description Inicia una seccion
-   * @param {FormData} categoria - Seccion a iniciar
-   * @returns {Observable<Section>} - Seccion creada
+   * @description Inicia una subsección
+   * @param {FormData} subseccion - Subsección a iniciar
+   * @returns {Observable<Section>} - Subsección creada
    */
-  public initSubsection(seccion: FormData): Observable<Section> {
-    return this.http.post<Section>(`${this.URL}/initSubsection`, seccion); //initCategory
-  }
-  /**
-  * @description Borra una seccion
-  * @param {FormData} categoria - Seccion a borrar
-  * @returns {Observable<Category>} - Seccion creada
-  */
-  public deleteSubsection(id: number): Observable<boolean> {
-    return this.http.delete<boolean>(`${this.URL}/deleteSubsection/${id}`); //initCategory
-  }
-  /**
-  * @description Borra una seccion
-  * @param {FormData} categoria - Seccion a borrar
-  * @returns {Observable<Category>} - Seccion creada
-  */
-  public getSubsectionsById(id: number): Observable<Section> {
-    return this.http.get<Section>(`${this.URL}/getSubsectionsById/${id}`); //initCategory
-  }
-  /**
-  * @description Borra una seccion
-  * @param {FormData} categoria - Seccion a borrar
-  * @returns {Observable<Category>} - Seccion creada
-  */
-  public setSubsection(subseccion: FormData): Observable<Section> {
-    return this.http.put<Section>(`${this.URL}/setSubsection`, subseccion); //initCategory
+  public initSubsection(subseccion: FormData): Observable<Section> {
+    return this.http.post<Section>(`${this.URL}/initSubsection`, subseccion);
   }
 
+  /**
+  * @description Borra una subsección
+  * @param {number} id - Id de la subsección a borrar
+  * @returns {Observable<boolean>} - Borrado exitoso/fallido
+  */
+  public deleteSubsection(id: number): Observable<boolean> {
+    return this.http.delete<boolean>(`${this.URL}/deleteSubsection/${id}`);
+  }
+
+  /**
+  * @description Obtiene una subsección según su id
+  * @param {Section} id - Id de la Subsección a obtener
+  * @returns {Observable<Section>} - Subsección requerida
+  */
+  public getSubsectionsById(id: number): Observable<Section> {
+    return this.http.get<Section>(`${this.URL}/getSubsectionsById/${id}`);
+  }
+
+  /**
+  * @description Modifica una subsección
+  * @param {FormData} subseccion - Subsección a modificar
+  * @returns {Observable<Section>} - Subsección modificada
+  */
+  public setSubsection(subseccion: FormData): Observable<Section> {
+    return this.http.put<Section>(`${this.URL}/setSubsection`, subseccion);
+  }
 
   //Imagenes
   /**
      * @description Inicia una imagen
      * @param {FormData} categoria - Imagen a iniciar
-     * @returns {Observable<ImagesInput>} - Imagen creada
+     * @returns {Observable<FileInput>} - Imagen creada
      */
-  public initImage(seccion: FormData): Observable<FileInput> {
-    return this.http.post<FileInput>(`${this.URL}/initImage`, seccion); //initCategory
+  public initImage(imagen: FormData): Observable<FileInput> {
+    return this.http.post<FileInput>(`${this.URL}/initImage`, imagen);
   }
+
   /**
      * @description Borra una imagen
-     * @param {FormData} categoria - Imagen a borrar
-     * @returns {Observable<ImagesInput>} - Imagen creada
+     * @param {number} id - Imagen a borrar
+     * @returns {Observable<number>} - Id imagen borrada
      */
   public deleteImage(id: number): Observable<number> {
-    return this.http.delete<number>(`${this.URL}/deleteImage/${id}`); //initCategory
+    return this.http.delete<number>(`${this.URL}/deleteImage/${id}`);
   }
+
   /**
-     * @description Borra una imagen
-     * @param {FormData} categoria - Imagen a borrar
-     * @returns {Observable<ImagesInput>} - Imagen creada
+     * @description Obtiene un arreglo de imagenes segun el id de la Categoria correspondiente
+     * @param {number} id - Id de la categoria relacionada con las imagenes
+     * @returns {Observable<ImagesInput>} - Arreglo de imagenes
      */
   public getImagesByCategoryId(id: number): Observable<FileInput[]> {
-    return this.http.get<FileInput[]>(`${this.URL}/getImagesByCategoryId/${id}`); //initCategory
+    return this.http.get<FileInput[]>(`${this.URL}/getImagesByCategoryId/${id}`);
   }
+
   /**
-     * @description Borra una imagen
-     * @param {FormData} categoria - Imagen a borrar
-     * @returns {Observable<ImagesInput>} - Imagen creada
+     * @description Reinicia las imagenes relacionadas a una categoria
+     * @param {number} id - Id de la categoria cuyas imagenes van a ser reiniciadas
+     * @returns {Observable<void>} 
      */
   public restartImagesCategory(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.URL}/restartImagesCategory/${id}`); //initCategory
+    return this.http.delete<void>(`${this.URL}/restartImagesCategory/${id}`);
   }
+
   /**
-     * @description Borra una imagen
-     * @param {FormData} categoria - Imagen a borrar
-     * @returns {Observable<ImagesInput>} - Imagen creada
+     * @description Reinicia las imagenes relacionadas a una sección
+     * @param {number} id - Id de la sección cuyas imagenes van a ser reiniciadas
+     * @returns {Observable<void>} 
      */
   public restartImagesSection(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.URL}/restartImagesSection/${id}`); //initCategory
+    return this.http.delete<void>(`${this.URL}/restartImagesSection/${id}`);
   }
+
   /**
-     * @description Borra una imagen
-     * @param {FormData} categoria - Imagen a borrar
-     * @returns {Observable<ImagesInput>} - Imagen creada
+     * @description Reinicia las imagenes relacionadas a una subsección
+     * @param {number} id - Id de la subsección cuyas imagenes van a ser reiniciadas
+     * @returns {Observable<void>} 
      */
   public restartImagesSubsection(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.URL}/restartImagesSubsection/${id}`); //initCategory
+    return this.http.delete<void>(`${this.URL}/restartImagesSubsection/${id}`);
   }
 
   //Files
   /**
-     * @description Inicia una imagen
-     * @param {FormData} categoria - Imagen a iniciar
-     * @returns {Observable<ImagesInput>} - Imagen creada
+     * @description Inicia un archivo 
+     * @param {FormData} file - Archivo a iniciar
+     * @returns {Observable<FileInput>} - Archivo creado
      */
-  public initFile(seccion: FormData): Observable<FileInput> {
-    return this.http.post<FileInput>(`${this.URL}/initFile`, seccion); //initCategory
+  public initFile(file: FormData): Observable<FileInput> {
+    return this.http.post<FileInput>(`${this.URL}/initFile`, file);
   }
 
   // CARRUSEL
