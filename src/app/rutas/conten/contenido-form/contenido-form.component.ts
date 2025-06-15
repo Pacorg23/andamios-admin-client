@@ -136,22 +136,10 @@ export class ContenidoFormComponent implements OnInit {
   public ngOnInit(): void {
     this.initialForm();
     this.initialiceEditor();
-    // TODO get parameter and send it to getCategory, craer object bla bla
   }
 
-  public getCategory(title: string): void {
-    this.contenService.getCategory(title).subscribe((categoria) => {
-      //TODO set values to form (patchValue)
-    }, (error) => {
-      Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: 'Error al obtener la categoría'
-      });
-    }
-    );
-  }
-
+  
+  
   public generateClickToFile(flag: string): void {
     switch (flag) {
       case 'presentation':
@@ -175,16 +163,18 @@ export class ContenidoFormComponent implements OnInit {
      */
   public addImageToFileArray(event: any, newID: number): void {
     if (!_.isNil(event.target)) {
-      const newFile = _.head(event.target.files);
-      if (newFile) {
-        this.fileArray.push({
+      for(var i=0 ; i< event.target.files.length; i++){
+        const newFile = event.target.files[i];
+        if (newFile) {
+          this.fileArray.push({
           name: newFile.name,
-          fileId: newID,
+          fileId: newID + i,
           url: URL.createObjectURL(newFile),
           file: newFile
         });
-        this.cdRef.detectChanges();
       }
+      this.cdRef.detectChanges();
+    }
     } else {
       console.error('Error al agregar imagen al array');
     }
@@ -259,20 +249,24 @@ export class ContenidoFormComponent implements OnInit {
    */
   public initialiceEditor(): void {
     this.route.params.subscribe(params => {
+
       this.stage = ConstantsConten.INIT_STAGE;
+
       if (_.isNil(params["id"])) {
         this.componentInfo.action = ConstantsConten.CREATE_TITLE;
       } else {
+
         this.componentInfo.id = _.lowerCase(params["id"]);
         this.componentInfo.action = ConstantsConten.EDIT_TITLE;
         this.loading = true
+
         this.contenService.getCategoriesById(this.componentInfo.id).subscribe((response) => {
+          
           this.categoria = response;
           if (response.is_default) {
             this.categoryForm.get("name").disable();
           } else {
             this.categoryForm.get("name").enable();
-
           }
           this.componentInfo.name = this.categoria.title
           this.categoryForm.setValue({
@@ -369,9 +363,7 @@ export class ContenidoFormComponent implements OnInit {
       img: [''],
     });
     this.categoryForm.get('type')?.valueChanges.subscribe(value => {
-      console.log("Valor actualizado:", this.categoryForm.get('type'));
       this.isManufactura = value == "B" ? true: false;
-      console.log("Valor actualizado:", this.isManufactura);
     });
   }
 
@@ -438,7 +430,7 @@ export class ContenidoFormComponent implements OnInit {
       .replace(/\s+/g, '-');
     return formatted;
   }
-
+ 
   private generarFormData(): FormData {
 
     const formData = new FormData();
@@ -462,7 +454,6 @@ export class ContenidoFormComponent implements OnInit {
   }
   private uploadMultipleFiles(files: any[], categoryId: string): void {
     if (files.length > 0) {
-      console.log(files.length)
       files.forEach((file) => this.uploadFile(file, categoryId, this.contenService.initImage.bind(this.contenService)));
     }
   }
@@ -476,7 +467,7 @@ export class ContenidoFormComponent implements OnInit {
   }
   private updateCategory(formData: FormData): void {
     formData.append('id', this.categoryForm.get('id').value);
-
+    
     this.contenService.setCategory(formData).subscribe(
       (categoriaCreada) => {
 
@@ -502,19 +493,15 @@ export class ContenidoFormComponent implements OnInit {
   private initializeCategory(formData: FormData): void {
     this.contenService.initCategory(formData).subscribe(
       (categoriaCreada) => {
-        console.log(categoriaCreada)
-        console.log(categoriaCreada)
         this.handleSuccess(`Categoría inicializada correctamente con id: ${categoriaCreada.id}`);
         this.handleAdditionalUploads(categoriaCreada.id);
         this.router.navigate(['conten/editor']);
       },
       (response) => {
-        console.log("response")
-        console.log(response)
         if (response.status == 409) {
-          this.handleError('Ya existe una Categoria con ese url')
+          this.handleError('Ya existe una Categoria con ese url')          
         } else{
-
+          
           this.handleError('Error al iniciar la categoría')
         }
         this.loading = false
@@ -522,7 +509,7 @@ export class ContenidoFormComponent implements OnInit {
     );
   }
   private handleAdditionalUploads(categoriaId: number): void {
-
+    
     // this.uploadFile(this.fileBanner, categoriaId + "", this.contenService.initFile.bind(this.contenService));
     this.uploadMultipleFiles(this.fileArray, categoriaId + "");
   }

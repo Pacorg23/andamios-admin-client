@@ -61,7 +61,7 @@ export interface FileObject {
 @Component({
   selector: 'app-subseccion-form',
   standalone: true,
-  imports: [ReactiveFormsModule, FormsModule, EditorModule, MatIconModule,LoadingComponent ],
+  imports: [ReactiveFormsModule, FormsModule, EditorModule, MatIconModule, LoadingComponent],
   templateUrl: './subseccion-form.component.html',
   styleUrl: './subseccion-form.component.css'
 })
@@ -75,7 +75,7 @@ export class SubseccionFormComponent implements OnInit {
   public sectionForm: FormGroup;
   public comesForm: Category; //Categoria a la que pertenece la seccion
   public subseccion: Section;
-  public loading:boolean = false;
+  public loading: boolean = false;
   public apiKey: string;
 
   //Configuracion del editor
@@ -169,7 +169,6 @@ export class SubseccionFormComponent implements OnInit {
 
   private loadSubsectionInfo(subseccionId: number, seccionId: string): void {
     this.contenService.getSubsectionsById(subseccionId).subscribe(response => {
-      console.log(response)
       this.subseccion = response[0];
       this.componentInfo.name = this.subseccion.title;
 
@@ -184,9 +183,9 @@ export class SubseccionFormComponent implements OnInit {
       });
 
 
-    this.procesarImagenPrincipal();
-    this.procesarImagenesSecundarias();
-    this.procesarArchivo();
+      this.procesarImagenPrincipal();
+      this.procesarImagenesSecundarias();
+      this.procesarArchivo();
     });
   }
   private procesarImagenPrincipal(): void {
@@ -363,14 +362,16 @@ export class SubseccionFormComponent implements OnInit {
    */
   public addImageToFileArray(event: any, newID: number): void {
     if (!_.isNil(event.target)) {
-      const newFile = _.head(event.target.files);
-      if (newFile) {
-        this.fileArray.push({
-          name: newFile.name,
-          fileId: newID,
-          url: URL.createObjectURL(newFile),
-          file: newFile
-        });
+      for (var i = 0; i < event.target.files.length; i++) {
+        const newFile = event.target.files[i];
+        if (newFile) {
+          this.fileArray.push({
+            name: newFile.name,
+            fileId: newID + i,
+            url: URL.createObjectURL(newFile),
+            file: newFile
+          });
+        }
         this.cdRef.detectChanges();
       }
     } else {
@@ -444,9 +445,8 @@ export class SubseccionFormComponent implements OnInit {
   private isEditMode(): boolean {
     return this.componentInfo.action === ConstantsConten.EDIT_TITLE;
   }
-  private restartImages(subseccionId){
-    this.contenService.restartImagesSubsection(subseccionId).subscribe(()=>{
-      console.log("Imagenes reiniciadas correctamente")
+  private restartImages(subseccionId) {
+    this.contenService.restartImagesSubsection(subseccionId).subscribe(() => {
     })
   }
   private updateSubsection(formData: FormData): void {
@@ -491,11 +491,9 @@ export class SubseccionFormComponent implements OnInit {
         this.router.navigate(['conten/editor']);
       },
       (response) => {
-        console.log("response")
-        console.log(response)
         if (response.status == 409) {
           this.handleError('Ya existe una Subseccion con ese url')
-        } else{
+        } else {
 
           this.handleError('Error al iniciar la categoría')
         }

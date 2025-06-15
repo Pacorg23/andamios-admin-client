@@ -387,14 +387,16 @@ export class SeccionFormComponent implements OnInit {
    */
   public addImageToFileArray(event: any, newID: number): void {
     if (!_.isNil(event.target)) {
-      const newFile = _.head(event.target.files);
-      if (newFile) {
-        this.fileArray.push({
-          name: newFile.name,
-          fileId: newID,
-          url: URL.createObjectURL(newFile),
-          file: newFile
-        });
+      for (var i = 0; i < event.target.files.length; i++) {
+        const newFile = event.target.files[i];
+        if (newFile) {
+          this.fileArray.push({
+            name: newFile.name,
+            fileId: newID + i,
+            url: URL.createObjectURL(newFile),
+            file: newFile
+          });
+        }
         this.cdRef.detectChanges();
       }
     } else {
@@ -533,7 +535,7 @@ export class SeccionFormComponent implements OnInit {
       (response) => {
         if (response.status == 409) {
           this.handleError('Ya existe una Seccion con ese url')
-        } else{
+        } else {
 
           this.handleError('Error al iniciar la categoría')
         }
