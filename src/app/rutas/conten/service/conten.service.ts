@@ -33,6 +33,14 @@ export class ContenService {
 
   //Categorias
   /**
+   * @description Activa o desactiva una categoria segun su Id
+   * @param {FormData} Id - Datos de la categoría a iniciar
+   * @returns {Observable<Category>} - Categoría creada
+   */
+  public toggleActive(Id: number): Observable<boolean> {
+    return this.http.post<boolean>(`${this.URL}/toggleActive/${Id}`, this.httpOptions);
+  }
+  /**
    * @description Inicia una categoría
    * @param {FormData} categoria - Datos de la categoría a iniciar
    * @returns {Observable<Category>} - Categoría creada

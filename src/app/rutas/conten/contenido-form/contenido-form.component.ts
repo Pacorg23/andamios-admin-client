@@ -11,6 +11,8 @@ import Swal from 'sweetalert2';
 import { Category } from '../models/category';
 import { LoadingComponent } from '../../../effects/loading/loading.component';
 import { ENV_CONSTANTS } from '../../../../environment.service';
+const MAX_HEIGHT = 1080 ; // Altura máxima sugerida para las imágenes
+const MAX_WIDTH = 1920; // Ancho máximo sugerido para las imágenes
 
 export interface FileObject {
   name: string,
@@ -85,6 +87,7 @@ export class ContenidoFormComponent implements OnInit {
   public isManufactura: boolean = false;
 
 
+
   //Configuracion del editor
   public config: EditorComponent['init'] = {
     plugins: 'anchor autolink charmap codesample image link lists media searchreplace table',
@@ -138,8 +141,8 @@ export class ContenidoFormComponent implements OnInit {
     this.initialiceEditor();
   }
 
-  
-  
+
+
   public generateClickToFile(flag: string): void {
     switch (flag) {
       case 'presentation':
@@ -163,18 +166,18 @@ export class ContenidoFormComponent implements OnInit {
      */
   public addImageToFileArray(event: any, newID: number): void {
     if (!_.isNil(event.target)) {
-      for(var i=0 ; i< event.target.files.length; i++){
+      for (var i = 0; i < event.target.files.length; i++) {
         const newFile = event.target.files[i];
         if (newFile) {
           this.fileArray.push({
-          name: newFile.name,
-          fileId: newID + i,
-          url: URL.createObjectURL(newFile),
-          file: newFile
-        });
+            name: newFile.name,
+            fileId: newID + i,
+            url: URL.createObjectURL(newFile),
+            file: newFile
+          });
+        }
+        this.cdRef.detectChanges();
       }
-      this.cdRef.detectChanges();
-    }
     } else {
       console.error('Error al agregar imagen al array');
     }
@@ -261,7 +264,7 @@ export class ContenidoFormComponent implements OnInit {
         this.loading = true
 
         this.contenService.getCategoriesById(this.componentInfo.id).subscribe((response) => {
-          
+
           this.categoria = response;
           if (response.is_default) {
             this.categoryForm.get("name").disable();
@@ -363,7 +366,7 @@ export class ContenidoFormComponent implements OnInit {
       img: [''],
     });
     this.categoryForm.get('type')?.valueChanges.subscribe(value => {
-      this.isManufactura = value == "B" ? true: false;
+      this.isManufactura = value == "B" ? true : false;
     });
   }
 
@@ -381,14 +384,26 @@ export class ContenidoFormComponent implements OnInit {
     if (!_.isNil(event.target)) {
       const newFile = _.head(event.target.files);
       if (newFile) {
-        this.fileBanner = {
-          name: newFile.name,
-          fileId: 0,
-          url: URL.createObjectURL(newFile),
-          file: newFile
-        };
-        this.categoryForm.get('img').patchValue(this.fileBanner.url);
-        this.cdRef.detectChanges();
+        this.getImageDimensions(newFile).then(dimensions => {
+          console.log("Dimensiones de la imagen:", dimensions);
+          if (dimensions.height> MAX_HEIGHT || dimensions.width > MAX_WIDTH) {
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: `La imagen debe tener un máximo de ${MAX_WIDTH}x${MAX_HEIGHT} píxeles.`
+            });
+            return;
+            
+          } else{
+
+            this.fileBanner = {
+              name: newFile.name,
+              fileId: 0,
+              url: URL.createObjectURL(newFile),
+              file: newFile
+            };
+          }
+        });
       }
     }
   }
@@ -430,7 +445,27 @@ export class ContenidoFormComponent implements OnInit {
       .replace(/\s+/g, '-');
     return formatted;
   }
- 
+
+  private getImageDimensions(file: File): Promise<{ width: number; height: number }> {
+    return new Promise((resolve, reject) => {
+      const url = URL.createObjectURL(file);
+      const img = new Image();
+
+      img.onload = () => {
+        const width = img.width;
+        const height = img.height;
+        URL.revokeObjectURL(url); // Limpieza
+        resolve({ width, height });
+      };
+
+      img.onerror = (err) => {
+        URL.revokeObjectURL(url);
+        reject(new Error("No se pudo cargar la imagen."));
+      };
+
+      img.src = url;
+    });
+  }
   private generarFormData(): FormData {
 
     const formData = new FormData();
@@ -439,7 +474,7 @@ export class ContenidoFormComponent implements OnInit {
     formData.append('tipo', this.categoryForm.get('type').value);
     formData.append('description', (this.categoryForm.get('type').value != "C") ? this.categoryForm.get('description').value : "");
     formData.append('img', this.fileBanner.file);
-    formData.append('has_sections',  "1");
+    formData.append('has_sections', "1");
     formData.append('is_active', this.categoryForm.get('isActive').value);
     return formData;
   }
@@ -453,6 +488,7 @@ export class ContenidoFormComponent implements OnInit {
     }
   }
   private uploadMultipleFiles(files: any[], categoryId: string): void {
+    console.log("Subiendo archivo: ");
     if (files.length > 0) {
       files.forEach((file) => this.uploadFile(file, categoryId, this.contenService.initImage.bind(this.contenService)));
     }
@@ -467,14 +503,14 @@ export class ContenidoFormComponent implements OnInit {
   }
   private updateCategory(formData: FormData): void {
     formData.append('id', this.categoryForm.get('id').value);
-    
+
     this.contenService.setCategory(formData).subscribe(
       (categoriaCreada) => {
 
         this.handleSuccess('Categoría inicializada correctamente', categoriaCreada.title);
         this.restartImages(this.categoryForm.get('id').value);
         this.handleAdditionalUploads(this.categoryForm.get('id').value);
-        this.router.navigate(['conten/editor']);
+        // this.router.navigate(['conten/editor']);
       },
       (error) => this.handleError('Error al iniciar la categoría', error.message)
     );
@@ -499,9 +535,9 @@ export class ContenidoFormComponent implements OnInit {
       },
       (response) => {
         if (response.status == 409) {
-          this.handleError('Ya existe una Categoria con ese url')          
-        } else{
-          
+          this.handleError('Ya existe una Categoria con ese url')
+        } else {
+
           this.handleError('Error al iniciar la categoría')
         }
         this.loading = false
@@ -509,7 +545,7 @@ export class ContenidoFormComponent implements OnInit {
     );
   }
   private handleAdditionalUploads(categoriaId: number): void {
-    
+
     // this.uploadFile(this.fileBanner, categoriaId + "", this.contenService.initFile.bind(this.contenService));
     this.uploadMultipleFiles(this.fileArray, categoriaId + "");
   }
@@ -519,18 +555,18 @@ export class ContenidoFormComponent implements OnInit {
    * @returns void
    */
   public nextStage(): void {
-    this.loading  = true
+    this.loading = true
     if (this.categoryForm.invalid) {
       Swal.fire({
         icon: 'error',
         title: 'Error',
         text: 'Formulario incompleto, por favor inserte nombre y tipo de categoria'
       });
-      this.loading  = false
+      this.loading = false
       return
     }
     const formData = this.generarFormData();
-
+    console.log("FormData: ", formData);
     if (this.isEditMode()) {
       this.updateCategory(formData);
     } else {

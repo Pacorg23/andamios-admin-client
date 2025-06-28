@@ -61,10 +61,34 @@ export class ContenedorContenComponent implements OnInit {
       this.getCategorias();
     }
   }
-
+  toggleActive(id: number): void {
+    this.contenService.toggleActive(id).subscribe((response) => {
+      Swal.fire({
+        title: 'Exito',
+        text: `Se ha cambiado el estado de la categoria con id ${id}`,
+        icon: 'success',
+        confirmButtonText: 'Aceptar'
+      }).then(() => {
+        this.categorias.find(cat => cat.id === id).is_active = !this.categorias.find(cat => cat.id === id).is_active;
+      });
+    }, (error) => {
+      Swal.fire({
+        title: 'Error',
+        text: 'Error al cambiar el estado de la categoria',
+        icon: 'error',
+        confirmButtonText: 'Aceptar'
+      });
+    });
+  }
+  /**
+   * @description Obtiene las categorias
+   * @returns void
+   */
   public getCategorias(): void {
     this.contenService.getCategories().subscribe((response) => {
+      console.log(response);
       this.categorias = response;
+      console.log(this.categorias);
     }, (error) => {
       Swal.fire({
         title: 'Error',
