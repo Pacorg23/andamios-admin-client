@@ -15,24 +15,36 @@
 
   @if(typeList === 'categoria') {
   @for (categoria of categorias; track categoria) {
-    
-    <mat-card class="mb-3">
-      <mat-card-header>
-        <mat-card-title>{{ categoria.title }}</mat-card-title>
-      </mat-card-header>
-      <mat-card-actions align="end">
-        @if (categoria.has_sections) {
-          <button mat-fab extended type="button" class="btn btn-primary option-button mx-2"
-          (click)="getSections(categoria)"><mat-icon class="me-1">app_registration</mat-icon>Secciones</button>
-        }
-        @if(!categoria.is_default){
-        <button mat-fab extended type="button" class="btn btn-danger option-button mx-2"
-        (click)="deleteProcess(categoria.id, typeList)"><mat-icon class="me-1">delete</mat-icon>Delete</button>
-        }
+  @if (categoria.tipo != "INITIAL") {
+  <mat-card class="mb-3" [ngClass]="{'inactive-card': !categoria.is_active}">
+    <mat-card-header>
+      <mat-card-title>{{ categoria.title }}</mat-card-title>
+      <label class="switch">
+        <input type="checkbox" checked (change)="toggleActive(categoria.id)"
+          [checked]="categoria.is_active">
+        <span class="slider round"></span>
+      </label>
+    </mat-card-header>
+    <mat-card-actions align="end">
+      @if (categoria.has_sections) {
+      <button mat-fab extended type="button" class="btn btn-primary option-button mx-2"
+        (click)="getSections(categoria)">
+        <mat-icon class="me-1">app_registration</mat-icon>Secciones
+      </button>
+      }
+      @if (!categoria.is_default) {
+      <button mat-fab extended type="button" class="btn btn-danger option-button mx-2"
+        (click)="deleteProcess(categoria.id, typeList)">
+        <mat-icon class="me-1">delete</mat-icon>Delete
+      </button>
+      }
       <button mat-fab extended type="button" class="btn btn-warning option-button mx-2"
-        (click)="editProcess(categoria.id)"><mat-icon class="me-1">edit</mat-icon>Edit</button>
+        (click)="editProcess(categoria.id)">
+        <mat-icon class="me-1">edit</mat-icon>Edit
+      </button>
     </mat-card-actions>
   </mat-card>
+  }
   }
   } @else if(typeList === 'seccion') {
   @for (seccion of secciones; track seccion) {
@@ -42,11 +54,11 @@
     </mat-card-header>
     <mat-card-actions align="end">
       <!-- TODO solo las secciones de la categoria tipo B o manufactura pueden tener subsecciones -->
-       @if(categorySelected.type == "B"){
+      @if(categorySelected.type == "B"){
 
-         <button mat-fab extended type="button" class="btn btn-primary option-button mx-2"
-         (click)="getSubsections(seccion)"><mat-icon class="me-1">app_registration</mat-icon>Subsecciones</button>
-        }
+      <button mat-fab extended type="button" class="btn btn-primary option-button mx-2"
+        (click)="getSubsections(seccion)"><mat-icon class="me-1">app_registration</mat-icon>Subsecciones</button>
+      }
       <button mat-fab extended type="button" class="btn btn-danger option-button mx-2"
         (click)="deleteProcess(seccion.id, typeList)"><mat-icon class="me-1">delete</mat-icon>Delete</button>
       <button mat-fab extended type="button" class="btn btn-warning option-button mx-2"
