@@ -1,0 +1,17 @@
+<div class="contenedor">
+  <h1>Clientes</h1>
+
+  <div class="opcion">
+    <div class="mb-3">
+      <label for="" class="form-label"></label>
+      <input type="file" class="form-control" accept=".pdf" (change)="onFileChange($event)">
+    </div>
+    <small> {{archivo?.nombre}} </small>
+    <button class="btn btn-outline-danger" (click)="subir()">Subir PDF</button>
+  </div>
+</div>
+
+@if(loading){
+  <app-loading></app-loading>
+}
+

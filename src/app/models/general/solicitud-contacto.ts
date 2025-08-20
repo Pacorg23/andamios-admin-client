@@ -1,0 +1,20 @@
+export class SolicitudContacto {
+  id:number
+  nombre:string
+  empresa:string
+  fijo:number
+  celular:number
+  correo:string
+  estadoIN:string
+  opcion:string
+  curso:string
+  numPersonas:number
+  infoComplementaria:string
+  estadoOUT:string
+  requerimientos:string
+  fecha:Date
+  duda:string
+  filename:string
+  createdAt:string
+  area:string
+}

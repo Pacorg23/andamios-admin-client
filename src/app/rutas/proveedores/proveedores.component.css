@@ -1,0 +1,84 @@
+.contenedor{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+h1{
+  text-align: center;
+  margin: 12px auto 20px auto;
+  border-bottom: 2px solid #b30000;
+  width: 20%;
+  padding-bottom: 10px;
+}
+
+.form-control:focus, .form-check-input:checked, .form-check-input:hover{
+  border-color: #B30000;
+  box-shadow: 0 0 0 0.25rem rgba(173,0,0,.25);
+}
+
+.form-check-input:checked{
+  background-color: #B30000;
+  border-color: #B30000;
+}
+
+.opciones{
+  width: 50%;
+  margin: 40px auto;
+  text-align: center;
+}
+
+.opcion{
+  width: 60%;
+  margin: 10px auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.opcion button{
+  width: 40%;
+  margin: 10px auto;
+}
+
+.comunicados{
+  width: 60%;
+  margin: 30px 0;
+  
+  padding: 0 0 20px 0;
+}
+
+.comunicados h2{
+  width: 100%;
+  text-align: center;
+}
+
+.comunicado{
+  position: relative;
+  border: 1px solid #B30000;
+  border-radius: 15px;
+  padding: 20px;
+  margin-bottom: 15px;
+}
+
+.opc{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.close{
+  position: absolute;
+  right: 0;
+  top: 0px;
+  cursor: pointer;
+  border-radius: 10px;
+  padding: 10px;
+  width: auto;
+  height: auto;
+}
+
+.close:hover{
+  background-color: #B30000;
+  color: white;
+}

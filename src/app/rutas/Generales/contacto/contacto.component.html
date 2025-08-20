@@ -1,0 +1,131 @@
+<div class="contenedor">
+  <h1>Contacto</h1>
+  <div class="contacto">
+
+    <mat-icon class="exit-btn" (click)="goBack()">arrow_back</mat-icon>
+
+    <div class="table-responsive">
+      <table class="table table-bordered table-hover" id="mytable">
+        <thead>
+          <tr>
+            <th scope="col" id="id">ID</th>
+            <th scope="col">Nombre</th>
+            <th scope="col">Empresa</th>
+            <th scope="col">Tipo de solicitud</th>
+            <th scope="col">Fecha de la solicitud</th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (solicitud of solicitudes; track solicitud) {
+          <tr (click)="showID(solicitud.id)" class="option">
+            <th>{{ solicitud.id }}</th>
+            <th>{{ solicitud.nombre }}</th>
+            <th>{{ solicitud.empresa }}</th>
+            <th>{{ solicitud.opcion }}</th>
+            <th>{{ solicitud.createdAt}}</th>
+            <th (click)="eliminar($event, solicitud.id)"> <mat-icon>delete</mat-icon> </th>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  @if(show){
+  <div class="info" (click)="cerrarID($event)" id="info">
+    <div class="caja" (click)="$event.stopPropagation()" id="caja">
+      <button class="btn btn-danger close" (click)="cerrarID($event)">
+        <mat-icon>close</mat-icon>
+      </button>
+      <section class="datos-generales">
+        <h2>Datos Generales</h2>
+        <div class="nombre">
+          <label for="">Nombre: </label>
+          {{solicitud.nombre}}
+        </div>
+        <div class="empresa">
+          <label for="">Empresa: </label>
+          {{solicitud.empresa}}
+        </div>
+        <div class="fijo">
+          <label for="">Fijo: </label>
+          {{solicitud.fijo}}
+        </div>
+        <div class="celular">
+          <label for="">Celular: </label>
+          {{solicitud.celular}}
+        </div>
+        <div class="correo">
+          <label for="">Correo: </label>
+          {{solicitud.correo}}
+        </div>
+        <div class="estadoIN">
+          <label for="">Estado donde recide: </label>
+          {{solicitud.estadoIN}}
+        </div>
+        <div class="opcion">
+          <label for="">Tipo de solicitud: </label>
+          {{solicitud.opcion}}
+        </div>
+        <div class="fecha">
+          <label for="">Fecha de solicitud: </label>
+          {{solicitud.createdAt}}
+        </div>
+      </section>
+
+      <section class="datos-particulares">
+        <h2>{{solicitud.opcion}}</h2>
+        @if(solicitud.opcion === 'Venta/Renta'){
+        <div class="venta">
+          <div class="estadoOUT">
+            <label for="">Estado donde se requiere:</label>
+            {{solicitud.estadoOUT}}
+          </div>
+          <div class="requerimientos">
+            <label for=""
+              (click)="downloadFile('requerimientos-'+solicitud.empresa,solicitud.requerimientos)">Requerimientos</label>
+          </div>
+          <div class="fecha">
+            <label for="">Fecha en la cual se necesita:</label>
+            {{solicitud.fecha}}
+          </div>
+        </div>
+        }
+        @if(solicitud.opcion === 'Cursos'){
+        <div class="cursos">
+          <div class="curso">
+            <label for="">Curso solicitado:</label>
+            {{solicitud.curso}}
+          </div>
+          <div class="personas">
+            <label for="">Se necesita el curso para: </label>
+            {{solicitud.numPersonas + ' personas'}}
+          </div>
+          @if(solicitud.infoComplementaria){
+          <div class="info-complementaria">
+            <label for=""
+              (click)="downloadFile('info-complementaria-'+solicitud.empresa,solicitud.infoComplementaria)">Informacion
+              Complementaria</label>
+          </div>
+          }
+        </div>
+        }
+        @if(solicitud.opcion === 'General'){
+        <div class="duda">
+          <div class="duda">
+            <label for="">Duda: </label>
+            <br>
+            {{solicitud.duda}}
+          </div>
+        </div>
+        }
+      </section>
+    </div>
+  </div>
+}
+</div>
+
+@if(loading){
+  <app-loading></app-loading>
+}

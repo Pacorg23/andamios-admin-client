@@ -1,0 +1,32 @@
+<div class="contenedor" [@fadeIn] id="contenedor">
+
+  <form [formGroup]="form" (submit)="subir()">
+
+    <button type="button" class="close" (click)="close()"><mat-icon>close</mat-icon></button>
+    <h1>{{sucursal?.nombre}}</h1>
+
+    <div class="mb-3">
+      <label for="" class="form-label">Nombre</label>
+      <input type="text" class="form-control" formControlName="nombre">
+    </div>
+
+    <div class="mb-3">
+      <label for="" class="form-label">Direccion</label>
+      <input type="text" class="form-control" formControlName="direccion">
+    </div>
+
+    <div class="mb-3">
+      <label for="" class="form-label">Telefono</label>
+      <input type="text" class="form-control" formControlName="telefono">
+    </div>
+
+    <div class="mb-3">
+      <label for="" class="form-label">Maps</label>
+      <input type="text" class="form-control" formControlName="maps">
+    </div>
+
+    <div class="mb-3">
+      <button type="submit" class="btn btn-outline-danger">Subir</button>
+    </div>
+  </form>
+</div>

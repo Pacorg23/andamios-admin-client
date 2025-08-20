@@ -1,0 +1,34 @@
+.contenedor{
+  width: 100%;
+  height: 100vh;
+  background-image: url('/background.jpg');
+  background-size: cover;
+}
+
+.espejo{
+  width: 100%;
+  height: 100%;
+  background-color: rgba(29, 29, 29, 0.514);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+form{
+  width: 20%;
+  height: auto;
+  background-color: white;
+  padding: 20px;
+  border-radius: 15px;
+}
+
+.form-control:focus, .form-check-input:checked, .form-check-input:hover{
+  border-color: #B30000;
+  box-shadow: 0 0 0 0.25rem rgba(173,0,0,.25);
+}
+
+.form-check-input:checked{
+  background-color: #B30000;
+  border-color: #B30000;
+}
+

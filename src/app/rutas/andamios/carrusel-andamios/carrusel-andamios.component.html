@@ -1,0 +1,65 @@
+<div class="contenedor" [@fadeIn]>
+  <mat-icon class="exit-btn" (click)="goBack()">arrow_back</mat-icon>
+  <h1 class="tile" id="title">Modificar carrusel</h1>
+
+  <div class="table-responsive">
+    <table class="table table-bordered table-hover" id="mytable">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nombre del archivo</th>
+          <th>Preview</th>
+          <th>Modificar</th>
+          <th>Eliminar</th>
+        </tr>
+      </thead>
+      <tbody class="table-group-divider">
+        @for (item of carrusel; track item) {
+          <tr>
+            <th>{{item.id}}</th>
+            <th>{{item.filename}}</th>
+            <th><img src="{{item.file}}" alt="file"></th>
+            <th (click)="editando(item.id, item.filename)"> <mat-icon>edit</mat-icon> </th>
+            <th (click)="delete(item.id)"> <mat-icon>delete</mat-icon> </th>
+          </tr>
+        }
+
+        @if(carrusel?.length !== 10){
+          <tr>
+            <th style="font-size: 30px;" (click)="open()"> <mat-icon>add</mat-icon> </th>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  @if(estado != 'void'){
+  <div class="formulario">
+    @if(editar){
+      <h2>Dato editando: {{datoEditado}}</h2>
+    }
+    <form [formGroup]="formulario" id="add" scrollIntoView [@animacion]="estado" (ngSubmit)="subir()">
+      <button type="button" class="btn btn-outline-warning mb-3" (click)="close()"><mat-icon>close</mat-icon></button>
+      <div class="mb-3">
+        <label for="nombre"> Imagen Normal </label>
+        <input id="nombre" type="file" class="form-control" formControlName="imagen1" accept="image/*"
+          (change)="onFileChange($event)">
+      </div>
+      <div class="mb-3">
+        <label for="nombre"> Imagen Responsive </label>
+        <input id="nombre" type="file" class="form-control" formControlName="imagen2" accept="image/*"
+          (change)="onResponsiveFileChange($event)">
+      </div>
+
+      @if(editar){
+        <button type="submit" class="btn btn-outline-danger" id="btn-mod">Modificar</button>
+      } @else {
+        <button type="submit" class="btn btn-outline-danger" id="btn-add">Enviar</button>
+      }
+    </form>
+  </div>
+  }
+</div>
+
+@if(loading){
+  <app-loading></app-loading>
+}

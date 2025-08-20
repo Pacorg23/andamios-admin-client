@@ -1,0 +1,157 @@
+
+.responsive{
+  display: none;
+}
+
+nav{
+  width: 100%;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  background-color: white;
+  box-shadow:rgb(224,224,224) -2px 2px 12px;
+}
+
+.contenido{
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.contenido img{
+  width: 150px;
+  height: 100%;
+}
+
+.contenido ul{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: fit-content;
+}
+
+.contenido ul li{
+  height: 100%;
+}
+
+a{
+  height: 100%;
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: black;
+  padding: 0 20px;
+}
+
+a:hover , .usr:hover{
+  background-color: var(--color-primario);
+  color: white !important;
+  cursor: pointer;
+}
+
+.active{
+  background-color: var(--color-primario);
+  color: white !important;
+  cursor: pointer;
+}
+
+.sub{
+  position: relative;
+}
+
+.submenu{
+  visibility: none;
+  opacity: 0;
+  pointer-events: none;
+  background-color: white;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  z-index: 1;
+  width: 200px !important;
+  display: flex;
+  flex-direction: column !important;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.submenu li{
+  width: 100%;
+}
+
+.submenu a{
+  padding: 10px 20px;
+  width: 100%;
+}
+
+.sub:hover .submenu{
+  visibility: visible;
+  opacity: 1;
+  pointer-events: all;
+}
+
+
+
+mat-icon{
+  cursor: pointer;
+}
+
+@media only screen and (min-width: 200px) and (max-width: 749px){
+
+  nav{
+    position: relative;
+    background-color: white;
+  }
+
+  .responsive{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px 0 0;
+  }
+
+  .responsive img{
+    width: 140px;
+    height: 100%;
+  }
+
+  .responsive mat-icon{
+    font-size: 20px;
+    color: var(--color-primario);
+  }
+
+  .contenido{
+    display: none;
+    opacity: 0;
+    background-color: white;
+    position: absolute;
+    top: 100%;justify-content: space-evenly;
+    transition: opacity 0.3s ease-in-out !important;
+  }
+
+  .contenido img{
+    display: none;
+  }
+
+  .show{
+    display: flex;
+    opacity: 1;
+  }
+
+}
+
+@media only screen and (min-width: 750px) and (max-width: 999px){
+
+}
+
+@media only screen and (min-width: 1000px) and (max-width: 1199px){
+
+}

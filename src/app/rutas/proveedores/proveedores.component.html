@@ -1,0 +1,58 @@
+<div class="contenedor">
+  <h1>Proveedores</h1>
+
+  <section class="opciones">
+    <div class="mb-3">
+      <label for="" class="form-label">Selecciona una accion</label>
+      <select name="" id="" class="form-control" [(ngModel)]="accion">
+        <option value="">-- Accion --</option>
+        <option value="pdf">Modificar PDF de ayuda a proveedores</option>
+        <option value="com">Comunicados</option>
+      </select>
+    </div>
+  </section>
+
+  @if(accion === 'pdf'){
+  <div class="opcion">
+    <div class="mb-3">
+      <label for="" class="form-label"></label>
+      <input type="file" class="form-control" accept=".pdf" (change)="onFileChange($event)">
+    </div>
+    <small> {{pdf?.nombre}} </small>
+    <button class="btn btn-outline-danger" (click)="subir()">Subir PDF</button>
+  </div>
+  }
+
+  @if(accion === 'com'){
+  <div class="opcion">
+    <form [formGroup]="comunicado" (ngSubmit)="subir()">
+      <div class="mb-3">
+        <label for="" class="form-label">Titulo</label>
+        <input type="text" class="form-control" formControlName="titulo">
+        <label for="" class="form-label">Comunicado</label>
+        <textarea name="" id="" class="form-control" formControlName="comunicado"></textarea>
+        <label for="" class="form-label">Link del contenido</label>
+        <input type="text" class="form-control" formControlName="link">
+      </div>
+      <button class="btn btn-outline-danger">Publicar comunicado</button>
+    </form>
+  </div>
+
+  <div class="comunicados">
+    <h2>Comunicados</h2>
+    @for(comunicado of comunicados.reverse(); track comunicado){
+    <div class="comunicado">
+      <h3>{{ comunicado.titulo }}</h3>
+      <div class="opc">
+        <p>{{ comunicado.createdAt }}</p>
+        <mat-icon class="close" (click)="eliminarComunicado(comunicado.id)">close</mat-icon>
+      </div>
+    </div>
+    }
+  </div>
+  }
+</div>
+
+@if(loading){
+  <app-loading></app-loading>
+}

@@ -1,0 +1,182 @@
+<div class="contenedor" [@fadeIn]>
+
+  <button id="close" (click)="closeForm()">
+    <mat-icon>close</mat-icon>
+  </button>
+
+  @if(elemento?.tipo === 'cat'){
+
+  <h1> {{(elemento?.accion)?.toUpperCase() }} {{(elemento?.objetivo)?.toUpperCase() }} </h1>
+
+  <form [formGroup]="formularioCategoria" (ngSubmit)="sendForm()">
+
+    <div class="form-floating mb-3">
+      <input type="text" class="form-control" placeholder="titulo" formControlName="nombre" [(ngModel)]="nombre_corto">
+      <label for="floatingInput">Titulo</label>
+    </div>
+
+    <div class="form-floating mb-3">
+      <input type="text" class="form-control" placeholder="Nombre" formControlName="url" [value]="formattedText">
+      <label for="floatingInput">Nombre Corto( ejem. andamios-atlas)</label>
+    </div>
+
+    <div class="mb-3">
+      <mat-form-field>
+        <mat-label>Selecciona una opcion</mat-label>
+        <mat-select formControlName="tipo">
+          <mat-option value="A">
+            <img src="/icon1.png" alt="andamios" width="50px" height="50px"> Original
+          </mat-option>
+          <mat-option value="B">
+            <img src="/icon2.png" alt="andamios" width="50px" height="50px"> Galerias
+          </mat-option>
+          <mat-option value="C">
+            <img src="/icon4.png" alt="andamios" width="50px" height="50px"> Listas
+          </mat-option>
+          <mat-option value="D">
+            <img src="/icon3.png" alt="andamios" width="50px" height="50px"> Blog
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="mb-3">
+      <label for="" class="form-label pe-2">¿Saldra en la pagina de inicio?</label>
+      <input class="form-check-input" type="checkbox" formControlName="mostrar_inicio" (change)="openBannerInput()">
+    </div>
+
+    @if(banner){
+    <div class="mb-3">
+      <label for="" class="form-label">Banner de la pagina de inicio</label>
+      <input type="file" class="form-control" formControlName="banner" (change)="onBannerChange($event)">
+
+      @if(bannerImageURL){
+      <div class="mb-3">
+        <img id="image_inicio" src="{{bannerImageURL}}" alt="image">
+      </div>
+      }
+    </div>
+    }
+
+    <button type="submit">Enviar</button>
+
+  </form>
+
+  } @else {
+
+  <h1> {{(elemento?.accion)?.toUpperCase() }} {{(elemento?.objetivo)?.toUpperCase() }} A {{
+    (elemento?.nombre)?.toUpperCase() }}</h1>
+
+  <form [formGroup]="formulario" (ngSubmit)="sendForm()">
+    <div class="form-floating mb-3">
+      <input type="text" class="form-control" placeholder="titulo" formControlName="nombre" [(ngModel)]="nombre_corto">
+      <label for="floatingInput">Titulo</label>
+    </div>
+
+    @if(elemento?.tipo === 'A'){
+    <div class="form-floating mb-3">
+      <input type="text" class="form-control" placeholder="Nombre" formControlName="url" [value]="formattedText">
+      <label for="floatingInput">Nombre Corto( ejem. andamios-atlas)</label>
+    </div>
+
+    @if(elemento?.objetivo == 'seccion'){
+    <div class="mb-3">
+      <label for="" class="form-label pe-2">¿Es seccion de titulo?</label>
+      <input class="form-check-input" type="checkbox" formControlName="isTitle">
+    </div>
+    }
+    }
+
+    <div class="mb-3">
+      <editor [apiKey]="apiKey" [init]="config" formControlName="descripcion">
+      </editor>
+    </div>
+
+    @if(elemento?.tipo === 'A' && elemento?.objetivo === 'seccion'){
+    <div class="mb-3">
+      <label for="" class="form-label pe-2">¿Saldra en la pagina de inicio?</label>
+      <input class="form-check-input" type="checkbox" formControlName="mostrar_inicio">
+    </div>
+    }
+
+    @if(elemento?.tipo === 'A' || elemento?.tipo === 'D'){
+    <div class="mb-3">
+      <label for="" class="form-label pe-2">Ficha tecnica o archivo pdf</label>
+      <input class="form-check-input" type="checkbox" formControlName="btn_pdf"
+        (change)="boton_archivo = !boton_archivo">
+    </div>
+
+    @if(boton_archivo){
+    <div class="mb-3">
+      <input type="file" class="form-control" accept=".pdf" (change)="onPDFChange($event)">
+      @if(pdfUrl){
+      <small>{{pdfUrl}}</small>
+      }
+    </div>
+    }
+    }
+
+    @if(elemento?.tipo === 'C' || elemento?.tipo === 'A'){
+    <div class="mb-3">
+      <label for="" class="form-label pe-2">Boton de contacto</label>
+      <input class="form-check-input" type="checkbox" formControlName="btn_contacto">
+    </div>
+    }
+
+    @if( elemento?.objetivo === 'seccion'){
+    @if(elemento?.tipo === 'A' || elemento?.tipo === 'B' || elemento?.tipo === 'D'){
+    <div class="mb-3">
+      @if(elemento?.tipo === 'B' || elemento?.tipo === 'C' || elemento?.tipo === 'D'){
+      <label for="" class="form-label pe-2">Imagen de presentacion</label>
+      } @else {
+      <label for="" class="form-label pe-2">Imagen de presentacion (Gif preferentemente)</label>
+      }
+      <input class="form-control" type="file" accept="image/*" formControlName="imagen_inicio"
+        (change)="onInicioImgChange($event)">
+      @if(inicio_imgUrl){
+      <br>
+      <img id="image_inicio" src="{{inicio_imgUrl}}" alt="image">
+      }
+    </div>
+    }
+    }
+
+
+    @if(elemento?.tipo === 'A' || elemento?.tipo === 'C'){
+    <div class="grid">
+      @for (file of fileUrl; track file; let i = $index) {
+      <div class="item" id="img">
+        <img src="{{file.url}}" alt="image" />
+        <div class="edit_btn">
+          <i class="material-icons" (click)="eliminarImagen(file,i)">delete</i>
+          <i class="material-icons" (click)="modificarImagen(file, i)">edit</i>
+        </div>
+      </div>
+      } @empty {
+      <div class="item">
+        <p>No hay imagenes</p>
+      </div>
+      }
+
+      <div class="item">
+        <div class="file-input-container">
+          <button type="button" class="file-input-button" (click)="getFile()">
+            <i class="material-icons">add</i>
+          </button>
+          <input title="image" type="file" accept="image/*" class="file-input" id="file-input"
+            (change)="onFileChange($event, elemento.id)">
+        </div>
+      </div>
+    </div>
+    }
+
+    <button type="submit">Enviar</button>
+
+  </form>
+
+  }
+</div>
+
+@if(loading){
+<app-loading></app-loading>
+}

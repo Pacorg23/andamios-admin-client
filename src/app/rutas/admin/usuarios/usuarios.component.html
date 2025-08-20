@@ -1,0 +1,61 @@
+<div class="contenedor">
+  <h1 class="tile" id="title">Agregar Usuarios</h1>
+
+  <div class="table-responsive">
+    <table class="table table-bordered table-hover" id="mytable">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Correo</th>
+          <th>Modificar</th>
+          <th>Eliminar</th>
+          <th>Cerrar sesión</th>
+        </tr>
+      </thead>
+      <tbody class="table-group-divider">
+
+        @for (user of users; track user) {
+          <tr>
+            <th>{{user.id}}</th>
+            <th>{{user.user}}</th>
+            <th>{{user.email}}</th>
+            <th (click)="editar(user)"> <mat-icon>edit</mat-icon> </th>
+            <th (click)="eliminar(user.id)"> <mat-icon>delete</mat-icon> </th>
+            <th (click)="cerrar(user.id)"> <mat-icon>logout</mat-icon> </th>
+          </tr>
+        }
+
+        <tr>
+          <th style="font-size: 30px;" (click)="open()"> <mat-icon>add</mat-icon> </th>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  @if(form){
+    <section class="father" id="father" (click)="closeForm()">
+      <div class="child" id="child" (click)="$event.stopPropagation()">
+        <form [formGroup]="formulario" (ngSubmit)="subir()">
+          <div class="mb-3">
+            <label for="" class="form-label">Usuario</label>
+            <input type="text" class="form-control" formControlName="user">
+          </div>
+          <div class="mb-3">
+            <label for="" class="form-label">Email</label>
+            <input type="text" class="form-control" formControlName="email">
+          </div>
+          <div class="mb-3">
+            <label for="" class="form-label">Password</label>
+            <input type="password" class="form-control" formControlName="pass">
+          </div>
+          <button class="btn btn-outline-danger" type="submit">Subir</button>
+        </form>
+      </div>
+    </section>
+  }
+</div>
+
+@if(loading){
+  <app-loading></app-loading>
+}

@@ -1,0 +1,105 @@
+<div class="contenedor">
+  <div class="seleccion">
+    <cdk-virtual-scroll-viewport itemSize="" class="categorias">
+      <mat-icon class="exit-btn" (click)="goBack()">arrow_back</mat-icon>
+      @for (categoria of categorias; track categoria.idCategoria) {
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            {{categoria.nombreCategoria}}
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div>
+          <p id="categoria">
+            {{categoria.nombreCategoria}}
+            <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu">
+              <button mat-menu-item
+                (click)="crearFormulario(categoria.idCategoria,categoria.nombreCategoria, 'agregar', 'seccion', categoria.tipoCategoria)">
+                <mat-icon>add</mat-icon>
+                <span>Agregar</span>
+              </button>
+              <button mat-menu-item
+                (click)="eliminar(categoria.idCategoria, 'categoria')">
+                <mat-icon>delete</mat-icon>
+                <span>Eliminar</span>
+              </button>
+              <button mat-menu-item
+                (click)="crearFormulario(categoria.idCategoria,categoria.nombreCategoria, 'editar', 'categoria', 'cat')">
+                <mat-icon>edit</mat-icon>
+                <span>Editar</span>
+              </button>
+            </mat-menu>
+          </p>
+          <div class="secciones">
+            @for (seccion of categoria.secciones; track seccion.idSeccion) {
+            <p id="seccion">
+              {{seccion.nombreSeccion}}
+              <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+                <mat-icon>more_vert</mat-icon>
+              </button>
+              <mat-menu #menu="matMenu">
+                @if(categoria.tipoCategoria === 'A'){
+                <button mat-menu-item
+                  (click)="crearFormulario(seccion.idSeccion, seccion.nombreSeccion, 'agregar', 'subseccion', categoria.tipoCategoria)">
+                  <mat-icon>add</mat-icon>
+                  <span>Agregar</span>
+                </button>
+                }
+                <button mat-menu-item
+                  (click)="eliminar(seccion.idSeccion, 'seccion')">
+                  <mat-icon>delete</mat-icon>
+                  <span>Eliminar</span>
+                </button>
+                <button mat-menu-item
+                  (click)="crearFormulario(seccion.idSeccion, seccion.nombreSeccion, 'editar', 'seccion', categoria.tipoCategoria)">
+                  <mat-icon>edit</mat-icon>
+                  <span>Editar</span>
+                </button>
+              </mat-menu>
+            </p>
+            <div class="subsecciones">
+              @for (subseccion of seccion.subsecciones; track subseccion.id) {
+              <p id="subseccion">
+                {{subseccion.nombre}}
+                <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+                  <mat-icon>more_vert</mat-icon>
+                </button>
+                <mat-menu #menu="matMenu">
+                  <button mat-menu-item
+                    (click)="eliminar(subseccion.id, 'subseccion')">
+                    <mat-icon>delete</mat-icon>
+                    <span>Eliminar</span>
+                  </button>
+                  <button mat-menu-item
+                    (click)="crearFormulario(subseccion.id, subseccion.nombre, 'editar', 'subseccion', categoria.tipoCategoria)">
+                    <mat-icon>edit</mat-icon>
+                    <span>Editar</span>
+                  </button>
+                </mat-menu>
+              </p>
+              }
+            </div>
+            }
+          </div>
+        </div>
+
+      </mat-expansion-panel>
+      }
+
+      <button id="crearCat" type="button" (click)="crearFormulario(null,null,'crear', 'categoria', 'cat')">Crear categoria</button>
+    </cdk-virtual-scroll-viewport>
+  </div>
+
+  <div class="formulerio">
+    @if(openForm){
+    <app-formulario [elemento]="seleccion" (close)="openForm = !openForm" (reload)="actualizarNavbar()"></app-formulario>
+    }
+  </div>
+</div>
+
+@if(loading){
+<app-loading></app-loading>
+}

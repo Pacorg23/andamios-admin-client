@@ -1,0 +1,22 @@
+<div class="contenedor">
+
+  <div class="search-bar">
+    <input class="form-control" [(ngModel)]="filtro" type="text" placeholder="¿Cual herramienta buscas?">
+  </div>
+
+  <div class="menu">
+    @for (item of filtrarUtilidades(); track item) {
+      <div class="item">
+        <a href="/andamios/{{item.url}}">
+          <img src="/{{ item.icon }}" alt="icon" />
+          <div class="title">{{ item.title }}</div>
+          <div class="description">{{ item.description }}</div>
+        </a>
+      </div>
+    }
+  </div>
+</div>
+
+@if(utilities){
+  <small >No existe la herramienta</small>
+}

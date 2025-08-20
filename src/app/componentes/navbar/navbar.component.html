@@ -1,0 +1,26 @@
+<nav>
+  <div class="responsive">
+    <img src="/Logo_Andamios-Atlas.png" alt="">
+    <mat-icon (click)="mostrarMenu()">{{iconoActual}}</mat-icon>
+  </div>
+
+  <div class="contenido" id="contenido">
+    <img src="/Logo_Andamios-Atlas.png" alt="">
+    <ul>
+      <li><a routerLink="/inicio" routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }">Inicio</a></li>
+      <li><a routerLink="/andamios" routerLinkActive="active">Andamios</a></li>
+      <li><a routerLink="/conten" routerLinkActive="active">Contén</a></li>
+      <li><a routerLink="/usuarios" routerLinkActive="active">Usuarios</a></li>
+      <li class="sub">
+        <a class="usr">{{user?.user}}</a>
+        <ul class="submenu" id="sub">
+          <li><a href="/perfil">Perfil</a></li>
+          <li><a (click)="cerrarSesion()">Cerrar Sesion</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+

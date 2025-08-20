@@ -1,0 +1,18 @@
+<div class="contenedor">
+  <div class="espejo">
+    <form [formGroup]="formulario" (ngSubmit)="login()">
+
+      <h3 class="text-center">Iniciar Sesión</h3>
+
+      <div class="mb-3">
+        <input type="text" class="form-control" placeholder="Usuario" formControlName="usuario">
+      </div>
+
+      <div class="mb-3">
+        <input type="password" class="form-control" placeholder="Contraseña" formControlName="password">
+      </div>
+
+      <button type="submit" class="btn btn-outline-danger"> Ingresar </button>
+    </form>
+  </div>
+</div>

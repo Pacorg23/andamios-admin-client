@@ -1,0 +1,28 @@
+<div class="contenedor">
+  <h1 class="tile" id="title">Agregar Usuarios</h1>
+  <section class="father" id="father">
+    <div class="child" id="child">
+      <form [formGroup]="formulario" (ngSubmit)="actualizar()">
+        <div class="mb-3">
+          <label for="" class="form-label">Usuario</label>
+          <input type="text" class="form-control" formControlName="user">
+        </div>
+        <div class="mb-3">
+          <label for="" class="form-label">Email</label>
+          <input type="text" class="form-control" formControlName="email">
+        </div>
+        <div class="mb-3">
+          <label for="" class="form-label">Password</label>
+          <input type="password" class="form-control" formControlName="pass">
+        </div>
+        <button class="btn btn-outline-danger" type="submit">Actualizar</button>
+        <button class="btn btn-outline-success" type="button" (click)="eliminar()">Eliminar Cuenta</button>
+      </form>
+
+    </div>
+  </section>
+</div>
+
+@if(loading){
+  <app-loading></app-loading>
+}

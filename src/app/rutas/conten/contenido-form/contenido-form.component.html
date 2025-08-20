@@ -1,0 +1,122 @@
+<div class="form-container">
+
+  <!--TITLE-->
+  <div class="my-3 mx-4">
+    <h1>{{componentInfo?.action}} categoria {{componentInfo?.name}}</h1>
+  </div>
+
+  <!--Create Section-->
+  <form class="initial-form" [formGroup]="categoryForm" (ngSubmit)="nextStage()">
+    <div class="form-floating mb-3">
+      <input type="text" class="form-control" placeholder="titulo" formControlName="name" [disabled]="false"
+        [(ngModel)]="urlPersonalized">
+      <label for="floatingInput">Nombre de la categoria</label>
+    </div>
+    <div class="form-floating mb-3">
+      <input type="text" class="form-control" placeholder="titulo" formControlName="id" [hidden]="true">
+    </div>
+    <div class="form-floating mb-3">
+      <input type="text" class="form-control" placeholder="URL" [disabled]="true" [value]="formattedText">
+      <label for="floatingInput">URL</label>
+    </div>
+
+    <div class="form-check mb-3">
+      <input class="form-check-input" type="checkbox" formControlName="isActive" id="flexCheckDefault">
+      <label class="form-check-label" for="flexCheckDefault">
+        ¿Estara activa la seccion?
+      </label>
+    </div>
+
+    <div class="bit-sectio mb-3">
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" name="type" id="inlineRadio1" value="A" formControlName="type" >
+        <label class="form-check-label" for="inlineRadio1">Tipo Ingenieria</label>
+      </div>
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" name="type" id="inlineRadio2" value="B" formControlName="type"  >
+        <label class="form-check-label" for="inlineRadio2">Tipo Manufactura</label>
+      </div>
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" name="type" id="inlineRadio3" value="C" formControlName="type">
+        <label class="form-check-label" for="inlineRadio3">Tipo Productos</label>
+      </div>
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" name="type" id="inlineRadio4" value="D" formControlName="type" >
+        <label class="form-check-label" for="inlineRadio4">Tipo Certificaciones</label>
+      </div>
+    </div>
+
+
+      <div class="mb-3">
+        <label for="">Descripcion</label>
+        <div class="mb-3">
+          <editor [apiKey]="apiKey" [init]="config" formControlName="description">
+          </editor>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        @if(fileBanner.url) {
+          <div class="banner">
+            <img src="{{fileBanner.url}}" alt="" class="banner">
+            <div class="edit_btn">
+              <i class="material-icons" (click)="removeImage()">delete</i>
+              <i class="material-icons" (click)="editImage()">edit</i>
+            </div>
+          </div>
+        } @else {
+          
+          <div class="item">
+            <div class="file-input-container">
+              <button type="button" class="btn btn-warning banner-btn" (click)="generateClickToFileBanner()">
+                <i class="material-icons">attachment</i> Agregar banner
+              </button>
+              <input title="image" type="file" accept="image/*" class="file-input" id="file-input"
+              (change)="saveImage($event)">
+            </div>
+          </div>
+        }
+      </div>
+      <!--ARRAY DE IMAGENES-->
+    @if(isManufactura){
+
+      <div class="mb-3">
+        <h5>Agregar imagenes</h5>
+        <div class="image-grid">
+          @for (file of fileArray; track file.fileId) {
+          <div class="item-array">
+            <img [src]="file.url" alt="image" />
+            <div class="edit_btn_array">
+              <i class="material-icons" (click)="removeImageFromFileArray(file.fileId)">delete</i>
+            </div>
+          </div>
+          }
+        </div>
+        @if(fileArray.length === 0) {
+        <div class="item">
+          <p>No hay imagenes</p>
+        </div>
+        }
+  
+        <div class="item mt-2">
+          <div class="file-input-container">
+            <button type="button" class="btn btn-warning file-input-button btn-width"
+              (click)="generateClickToFile('array')">
+              <i class="material-icons me-2">add</i> Agregar Imagen
+            </button>
+            <input title="image" type="file" accept="image/*" class="file-input" id="file-input-array" multiple
+              (change)="addImageToFileArray($event, fileArray.length + 1)">
+              
+          </div>
+        </div>
+      </div>
+      }
+
+    <button type="button" class="btn btn-danger confirm-button mx-1" (click)="goTo('editor')">Cancelar</button>
+    <button type="submit" class="btn btn-success confirm-button mx-1">{{componentInfo?.action}}</button>
+  </form>
+
+</div>
+@if(loading){
+  <app-loading></app-loading>
+}
