@@ -510,7 +510,7 @@ export class ContenidoFormComponent implements OnInit {
         this.handleSuccess('Categoría inicializada correctamente', categoriaCreada.title);
         this.restartImages(this.categoryForm.get('id').value);
         this.handleAdditionalUploads(this.categoryForm.get('id').value);
-        // this.router.navigate(['conten/editor']);
+        this.router.navigate(['conten/editor']);
       },
       (error) => this.handleError('Error al iniciar la categoría', error.message)
     );
